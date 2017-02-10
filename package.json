@@ -1,0 +1,27 @@
+{
+  "name": "bridge-api",
+  "version": "1.0.0",
+  "description": "A small bridge.",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cbinbin/bridge-api.git"
+  },
+  "author": "cbinbin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cbinbin/bridge-api/issues"
+  },
+  "homepage": "https://github.com/Cbinbin/bridge-api#readme",
+  "dependencies": {
+    "body-parser": "^1.16.0",
+    "cors": "^2.8.1",
+    "dotenv": "^4.0.0",
+    "express": "^4.14.1",
+    "mongoose": "^4.8.1"
+  }
+}
