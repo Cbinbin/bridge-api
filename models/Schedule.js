@@ -1,9 +1,7 @@
 const mongoose = require('mongoose')
 	, Schema = mongoose.Schema
 	, Project = require('./Project')
-	, FrontEnd = require('./FrontEnd')
-	, Backstage = require('./Backstage')
-	, BackEnd = require('./BackEnd')
+	, Taskbar = require('./Taskbar')
 
 const scheduleSchema = new Schema({
 	projectId: { 
@@ -12,11 +10,13 @@ const scheduleSchema = new Schema({
 	},
 	pending: {
 		time: String,
-		text: String
+		text: String,
+		discussion: String
 	},
 	start: {
 		time: String,
 		text: String,
+		discussion: String,
 		tasks: {
 			txt1: String,
 			txt2: String,
@@ -29,28 +29,30 @@ const scheduleSchema = new Schema({
 	going: {
 		time: String,
 		text: String,
-		taskbar: {
+		taskbars: {
 			frontEnd: { 
 				type: Schema.Types.ObjectId, 
-				ref: 'FrontEnd'
+				ref: 'Taskbar'
 			},
 			backstage: { 
 				type: Schema.Types.ObjectId, 
-				ref: 'Backstage'
+				ref: 'Taskbar'
 			},
 			backEnd: { 
 				type: Schema.Types.ObjectId, 
-				ref: 'BackEnd'
+				ref: 'Taskbar'
 			}
 		}
 	},
 	check: {
 		time: String,
-		text: String
+		text: String,
+		discussion: String
 	},
 	finish: {
 		time: String,
-		text: String
+		text: String,
+		discussion: String
 	}
 })
 module.exports = mongoose.model('Schedule', scheduleSchema)

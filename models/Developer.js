@@ -15,7 +15,7 @@ const developerSchema = new Schema({
 	introduction: { type: String },
 	status: { 
 		type: String, 
-		enum:['on', 'off'] 
+		enum: ['on', 'off'] 
 	},
 	projectTime: { type: Number },
 	totalTime: { type: Number },
