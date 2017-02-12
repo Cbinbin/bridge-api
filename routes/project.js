@@ -70,26 +70,114 @@ router.post('/:id/schedule', (req, res)=> {
 			discussion: req.body.discussion5 || '如需修改或添加功能，将在下一版本中更新。'
 		}
 	})
-	schedule.save((err)=> {
+	Schedule.findOne({projectId: projectId})
+	.exec((err, same)=> {
 		if(err) return res.send(err)
-		Project.update({_id: projectId},
-		{$set: {schedule: schedule._id}},
-		(err, result)=> {
-			if(err) return res.send(err)
-			console.log(result)
-		})
-		res.send(schedule)
+		if(!same) {
+			schedule.save((err)=> {
+				if(err) return res.send(err)
+				Project.update({_id: projectId},
+				{$set: {schedule: schedule._id}},
+				(err, result)=> {
+					if(err) return res.send(err)
+					console.log(result)
+				})
+				res.send(schedule)
+			})
+		} else {
+			res.send('该项目已添加过进度')
+		}
 	})
 })
 
-router.post('/schedule/:id/all', (req, res)=> {
-	
+function findTaskbarId(part, schedule) {
+	if(part == 'frontEnd') {
+		return schedule.going.taskbars.frontEnd
+	} else if(part == 'backstage') {
+		return schedule.going.taskbars.backstage
+	} else if(part == 'backEnd') {
+		return schedule.going.taskbars.backEnd
+	}
+}
+
+function scheduleChange(part, projectId, taskbarId) {
+	Schedule.findOne({projectId: projectId})
+	.exec((err, schedule)=> {
+		if(err) return res.send(err)
+		var schedule_bar = schedule.going.taskbars
+		if(part == 'frontEnd') {
+			schedule_bar.frontEnd = taskbarId
+		} else if(part == 'backstage') {
+			schedule_bar.backstage = taskbarId
+		} else if(part == 'backEnd') {
+			schedule_bar.backEnd = taskbarId
+		}
+		schedule.save((err)=> {
+			if(err) return console.log(err)
+			console.log(schedule)
+		})
+	})
+}
+
+router.post('/:id/schedule/:part', (req, res)=> {
+	const projectId = req.params.id
+		, part = req.params.part
+	Schedule.findOne({projectId: projectId})
+	.exec((err, schedule)=> {
+		if(err) return res.send(err)
+		if(!schedule) return res.send('Not found projectId')
+		barId = findTaskbarId(part, schedule)
+		Taskbar.findOne({_id: barId})
+		.exec((err, same)=> {
+			if(err) return res.send(err)
+			if(same) return res.send(`${part} taskbar already exists`)
+			const taskbar = new Taskbar({
+				projectId: projectId,
+				part: part,
+				column: []
+			})
+			const task = new Task({
+				txt: req.body.txt || '暂无',
+				completion: req.body.completion || false
+			})
+			task.save((err)=> {
+				if(err) return res.send(err)
+				taskbar.column.push(task._id)
+				taskbar.save((err)=> {
+					if(err) return res.send(err)
+					scheduleChange(part, projectId, taskbar._id)
+					res.send(taskbar)
+				})
+			})
+		})
+	})
 })
 
-router.get('/', (req, res)=> {
-	project.find('/', (err, projects)=> {
+router.post('/schedule/:barid/task', (req, res)=> {
+	const barId = req.params.barid
+	const task = new Task({
+		txt: req.body.txt || '暂无',
+		completion: req.body.completion || false
+	})
+	task.save((err)=> {
 		if(err) return res.send(err)
-		res.send(projects)
+		Taskbar.update({_id: barId},
+		{$push: {column: task._id}},
+		(err, txt)=> {
+			if(err) return res.send(err)
+			console.log(txt)
+			res.send(task)
+		})
+	})
+})
+
+router.get('/:id', (req, res)=> {
+	const projectId = req.params.id
+	Project.findOne({_id: projectId})
+	.populate('schedule')
+	.exec((err, project)=> {
+		if(err) return res.send(err)
+		res.send(project)
 	})
 })
 

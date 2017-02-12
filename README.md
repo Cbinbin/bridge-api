@@ -92,13 +92,13 @@ A small bridge.
 ```js
 		PATCH    http://localhost:2017/admin/project/:id/schedule?token=${token}
 ```
-### 添加任务
+### 添加任务(分3类)
 ```js
-		POST    http://localhost:2017/admin/project/:id/task?token=${token}
+		POST    http://localhost:2017/admin/project/:id/schedule/:part?token=${token}
 ```
 ### 更改任务
 ```js
-		PATCH    http://localhost:2017/admin/project/:id/task?token=${token}
+		PATCH    http://localhost:2017/admin/project/schedule/:id/task?token=${token}
 ```
 ### 查看项目列表
 ```js
