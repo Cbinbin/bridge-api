@@ -68,19 +68,19 @@ A small bridge.
 		POST    http://localhost:2017/admin/project?token=${token}
 ```
 ### 更改项目
-1. 改图片
+* 1. 改图片
 ```js
 		POST    http://localhost:2017/admin/project/:id/pic?token=${token}
 ```
-2. 其他
+* 2. 其他
 ```js
 		PATCH    http://localhost:2017/admin/project/:id?token=${token}
 ```
-3. 添加设计图
+* 3. 添加设计图
 ```js
 		POST    http://localhost:2017/admin/project/:id/design?token=${token}
 ```
-4. 删除设计图
+* 4. 删除设计图
 ```js
 		DELETE    http://localhost:2017/admin/project/:projectId/design/:designId?token=${token}
 ```
