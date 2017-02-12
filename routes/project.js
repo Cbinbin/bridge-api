@@ -173,8 +173,18 @@ router.post('/schedule/:barid/task', (req, res)=> {
 
 router.get('/:id', (req, res)=> {
 	const projectId = req.params.id
-	Project.findOne({_id: projectId})
-	.populate('schedule')
+	Project.findOne({_id: projectId}, {__v: 0})
+	.populate({path: 'schedule',
+		select: 'finish check going start pending',
+		populate: {
+			path: 'going.taskbars.frontEnd going.taskbars.backstage going.taskbars.backEnd',
+			select: 'part column',
+			populate: {
+				path: 'column',
+				select: 'txt completion'
+			}
+		}
+	})
 	.exec((err, project)=> {
 		if(err) return res.send(err)
 		res.send(project)
