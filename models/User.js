@@ -9,6 +9,10 @@ const userSchema = new Schema({
 	sex: { type: String },
 	headimg: { type: String },
 	origin: { type: String },
+	mold: { 
+		type: String, 
+		enum: ['ordinary', 'customer', 'developer'] 
+	},
 	//开发者字段
 	position: { type: String },
 	QQ: { type: Number },
