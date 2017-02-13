@@ -11,11 +11,6 @@ const router = require('express').Router()
 	, delFile = require('../utils/delFile')
 	, datenow = new Date()
 
-function judgeField(body, variable) {
-	if(body) variable = body
-	return variable
-}
-
 function dateChange(time) {
 	time[0] = moment(time[0]).format('MMM Do')
 	time[1] = moment(time[1]).format('MMM Do')
@@ -97,13 +92,12 @@ router.patch('/:id/change', (req, res)=> {
 	.exec((err, project)=> {
 		if(err) return res.send(err)
 		if(!project) return res.send({error: 'Not'})
-		judgeField(req.body.title, project.title)
-		judgeField(req.body.version, project.version)
-		judgeField(req.body.cycle, project.cycle)
-		judgeField(req.body.startDate, project.startDate)
-		judgeField(req.body.endDate, project.endDate)
-		judgeField(req.body.progression, project.progression)
-		console.log(project.progression)
+		if(req.body.title) project.title = req.body.title
+		if(req.body.version) project.version = req.body.version
+		if(req.body.cycle) project.cycle = req.body.cycle
+		if(req.body.startDate) project.startDate = req.body.startDate
+		if(req.body.endDate) project.endDate = req.body.endDate
+		if(req.body.progression) project.progression = req.body.progression
 		project.save((err)=> {
 			if(err) return res.send(err)
 			res.send(project)
