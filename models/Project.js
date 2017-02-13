@@ -45,6 +45,11 @@ const projectSchema = new Schema({
 			type: Schema.Types.ObjectId, 
 			ref: 'User'
 		}]
-	}
+	},
+	createdAt: {
+		type: Date, 
+		default: Date.now
+	},
+	updatedAt: { type: Date }
 })
 module.exports = mongoose.model('Project', projectSchema)

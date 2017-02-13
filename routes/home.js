@@ -4,6 +4,9 @@ const router = require('express').Router()
 router.get('/', (req, res)=> {
 	res.json({
 		api: host.bridge,
+		admin: host.bridge + 'admin',
+		user: host.bridge + 'user',
+		session: host.bridge + 'session',
 		project: host.bridge + 'project'
 	})
 })

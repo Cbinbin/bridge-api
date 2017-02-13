@@ -6,7 +6,15 @@ const router = require('express').Router()
 	, Schedule = require('../models/Schedule')
 	, Taskbar = require('../models/Taskbar')
 	, Task = require('../models/Task')
+	, host = require('../utils/hosturl')
+	, upload = require('../utils/upload')
+	, delFile = require('../utils/delFile')
 	, datenow = new Date()
+
+function judgeField(body, variable) {
+	if(body) variable = body
+	return variable
+}
 
 function dateChange(time) {
 	time[0] = moment(time[0]).format('MMM Do')
@@ -43,8 +51,7 @@ function scheduleChange(part, projectId, taskbarId) {
 		})
 	})
 }
-
-
+//创建项目
 router.post('/', (req, res)=> {
 	const project = new Project({
 		title: req.body.title || '空',
@@ -65,15 +72,48 @@ router.post('/', (req, res)=> {
 		res.send(project)
 	})
 })
-
+//改项目图
+router.post('/:id/picture', (req, res)=> {
+	const projectId = req.params.id
+	const picUpload = upload('pics', 'picture')
+	picUpload(req, res, (err)=> {
+		if(err) return res.send('something wrong')
+		Project.findOne({_id: projectId}) 
+		.exec((err, project)=> {
+			if(err) return res.send(err)
+			delFile(project.picture)
+			project.picture = host.bridge + req.file.path
+			project.save((err)=> {
+				if(err) return res.send(err)
+				res.send(project)
+			})
+		})
+	})
+})
+//更改项目详情
+router.patch('/:id/change', (req, res)=> {
+	const projectId = req.params.id
+	Project.findOne({_id: projectId})
+	.exec((err, project)=> {
+		if(err) return res.send(err)
+		if(!project) return res.send({error: 'Not'})
+		judgeField(req.body.title, project.title)
+		judgeField(req.body.version, project.version)
+		judgeField(req.body.cycle, project.cycle)
+		judgeField(req.body.startDate, project.startDate)
+		judgeField(req.body.endDate, project.endDate)
+		judgeField(req.body.progression, project.progression)
+		console.log(project.progression)
+		project.save((err)=> {
+			if(err) return res.send(err)
+			res.send(project)
+		})
+	})
+})
+//创建进度
 router.post('/:id/schedule', (req, res)=> {
 	const projectId = req.params.id
 	dateFormat = moment(datenow).format('MMM Do')
-	// time1 = dateChange(req.body.time1)
-	// time2 = dateChange2(req.body.time2[0], req.body.time2[1])
-	// time3 = dateChange2(req.body.time3[0], req.body.time3[1])
-	// time4 = dateChange2(req.body.time4[0], req.body.time4[1])
-	// time5 = dateChange(req.body.time5)
 	const schedule = new Schedule({
 		projectId: projectId,
 		pending: {
@@ -133,7 +173,7 @@ router.post('/:id/schedule', (req, res)=> {
 		}
 	})
 })
-
+//创建任务栏
 router.post('/:id/schedule/:part', (req, res)=> {
 	const projectId = req.params.id
 		, part = req.params.part
@@ -167,7 +207,7 @@ router.post('/:id/schedule/:part', (req, res)=> {
 		})
 	})
 })
-
+//添加单个任务
 router.post('/schedule/:barid/task', (req, res)=> {
 	const barId = req.params.barid
 	const task = new Task({
@@ -185,7 +225,7 @@ router.post('/schedule/:barid/task', (req, res)=> {
 		})
 	})
 })
-
+//获取项目
 router.get('/', (req, res)=> {
 	Project.find({ }, {__v: 0, document: 0, designs: 0})
 	.exec((err, projects)=> {
@@ -193,7 +233,7 @@ router.get('/', (req, res)=> {
 		res.send(projects)
 	})
 })
-
+//获取单个项目
 router.get('/:id', (req, res)=> {
 	const projectId = req.params.id
 	Project.findOne({_id: projectId}, {__v: 0})

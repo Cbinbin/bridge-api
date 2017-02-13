@@ -16,6 +16,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use('/storage', express.static('storage'))
 
 app.use('/', routes.home)
+app.use('/reg', routes.reg)
+app.use('/login', routes.login)
+app.use('/admin', routes.admin)
+app.use('/user', routes.user)
+app.use('/session', routes.session)
 app.use('/project', routes.project)
 
 app.listen(port, ()=> {
