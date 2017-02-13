@@ -8,6 +8,43 @@ const router = require('express').Router()
 	, Task = require('../models/Task')
 	, datenow = new Date()
 
+function dateChange(time) {
+	time[0] = moment(time[0]).format('MMM Do')
+	time[1] = moment(time[1]).format('MMM Do')
+	time = [time[0], time[1]]
+	return time
+}
+
+function findTaskbarId(part, schedule) {
+	if(part == 'frontEnd') {
+		return schedule.going.taskbars.frontEnd
+	} else if(part == 'backstage') {
+		return schedule.going.taskbars.backstage
+	} else if(part == 'backEnd') {
+		return schedule.going.taskbars.backEnd
+	}
+}
+
+function scheduleChange(part, projectId, taskbarId) {
+	Schedule.findOne({projectId: projectId})
+	.exec((err, schedule)=> {
+		if(err) return res.send(err)
+		var schedule_bar = schedule.going.taskbars
+		if(part == 'frontEnd') {
+			schedule_bar.frontEnd = taskbarId
+		} else if(part == 'backstage') {
+			schedule_bar.backstage = taskbarId
+		} else if(part == 'backEnd') {
+			schedule_bar.backEnd = taskbarId
+		}
+		schedule.save((err)=> {
+			if(err) return console.log(err)
+			console.log(schedule)
+		})
+	})
+}
+
+
 router.post('/', (req, res)=> {
 	const project = new Project({
 		title: req.body.title || '空',
@@ -97,35 +134,6 @@ router.post('/:id/schedule', (req, res)=> {
 	})
 })
 
-function findTaskbarId(part, schedule) {
-	if(part == 'frontEnd') {
-		return schedule.going.taskbars.frontEnd
-	} else if(part == 'backstage') {
-		return schedule.going.taskbars.backstage
-	} else if(part == 'backEnd') {
-		return schedule.going.taskbars.backEnd
-	}
-}
-
-function scheduleChange(part, projectId, taskbarId) {
-	Schedule.findOne({projectId: projectId})
-	.exec((err, schedule)=> {
-		if(err) return res.send(err)
-		var schedule_bar = schedule.going.taskbars
-		if(part == 'frontEnd') {
-			schedule_bar.frontEnd = taskbarId
-		} else if(part == 'backstage') {
-			schedule_bar.backstage = taskbarId
-		} else if(part == 'backEnd') {
-			schedule_bar.backEnd = taskbarId
-		}
-		schedule.save((err)=> {
-			if(err) return console.log(err)
-			console.log(schedule)
-		})
-	})
-}
-
 router.post('/:id/schedule/:part', (req, res)=> {
 	const projectId = req.params.id
 		, part = req.params.part
@@ -187,12 +195,6 @@ router.get('/', (req, res)=> {
 })
 
 router.get('/:id', (req, res)=> {
-	function dateChange(time) {
-		time[0] = moment(time[0]).format('MMM Do')
-		time[1] = moment(time[1]).format('MMM Do')
-		time = [time[0], time[1]]
-		return time
-	}
 	const projectId = req.params.id
 	Project.findOne({_id: projectId}, {__v: 0})
 	.populate({path: 'schedule',
