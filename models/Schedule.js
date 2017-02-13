@@ -9,12 +9,16 @@ const scheduleSchema = new Schema({
 		ref: 'Project'
 	},
 	pending: {
-		time: String,
+		time: [{
+			type: Date
+		}],
 		text: String,
 		discussion: String
 	},
 	start: {
-		time: String,
+		time: [{
+			type: Date
+		}],
 		text: String,
 		discussion: String,
 		tasks: {
@@ -27,7 +31,9 @@ const scheduleSchema = new Schema({
 		}
 	},
 	going: {
-		time: String,
+		time: [{
+			type: Date
+		}],
 		text: String,
 		taskbars: {
 			frontEnd: { 
@@ -45,12 +51,16 @@ const scheduleSchema = new Schema({
 		}
 	},
 	check: {
-		time: String,
+		time: [{
+			type: Date
+		}],
 		text: String,
 		discussion: String
 	},
 	finish: {
-		time: String,
+		time: [{
+			type: Date
+		}],
 		text: String,
 		discussion: String
 	}

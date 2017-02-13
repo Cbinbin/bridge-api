@@ -2,9 +2,8 @@ const mongoose = require('mongoose')
 	, Schema = mongoose.Schema
 	, Design = require('./Design')
 	, Document = require('./Document')
-	, Customer = require('./Customer')
+	, User = require('./User')
 	, Schedule = require('./Schedule')
-	, Developer = require('./Developer')
 
 const projectSchema = new Schema({
 	title: { type: String },
@@ -27,7 +26,7 @@ const projectSchema = new Schema({
 	},
 	possessor: { 
 		type: Schema.Types.ObjectId, 
-		ref: 'Customer'
+		ref: 'User'
 	},
 	schedule: { 
 		type: Schema.Types.ObjectId, 
@@ -36,15 +35,15 @@ const projectSchema = new Schema({
 	developers: { 
 		frontEnd: [{
 			type: Schema.Types.ObjectId, 
-			ref: 'Developer'
+			ref: 'User'
 		}],
 		backstage: [{
 			type: Schema.Types.ObjectId, 
-			ref: 'Developer'
+			ref: 'User'
 		}],
 		backEnd: [{
 			type: Schema.Types.ObjectId, 
-			ref: 'Developer'
+			ref: 'User'
 		}]
 	}
 })

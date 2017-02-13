@@ -1,13 +1,14 @@
 const router = require('express').Router()
 	, mongoose = require('mongoose')
 	, defaultId = new mongoose.Types.ObjectId('000000000000000000000000')
+	, moment = require('moment')
 	, Project = require('../models/Project')
 	, Schedule = require('../models/Schedule')
 	, Taskbar = require('../models/Taskbar')
 	, Task = require('../models/Task')
+	, datenow = new Date()
 
 router.post('/', (req, res)=> {
-	const datenow = new Date()
 	const project = new Project({
 		title: req.body.title || '空',
 		version: req.body.version || '空',
@@ -30,15 +31,21 @@ router.post('/', (req, res)=> {
 
 router.post('/:id/schedule', (req, res)=> {
 	const projectId = req.params.id
+	dateFormat = moment(datenow).format('MMM Do')
+	// time1 = dateChange(req.body.time1)
+	// time2 = dateChange2(req.body.time2[0], req.body.time2[1])
+	// time3 = dateChange2(req.body.time3[0], req.body.time3[1])
+	// time4 = dateChange2(req.body.time4[0], req.body.time4[1])
+	// time5 = dateChange(req.body.time5)
 	const schedule = new Schedule({
 		projectId: projectId,
 		pending: {
-			time: req.body.time1 || '？月？日',
+			time: req.body.time1 || [dateFormat],
 			text: req.body.text1 || '该项目暂未开始，待处理。',
 			discussion: req.body.discussion1 || 'undefined'
 		},
 		start: {
-			time: req.body.time2 || '？月？日 ~ ？月？日',
+			time: req.body.time2 || [dateFormat, dateFormat],
 			text: req.body.text2 || '该项目已经正式启动。',
 			discussion: req.body.discussion2 || '该阶段包括以下工作内容：',
 			tasks: {
@@ -51,7 +58,7 @@ router.post('/:id/schedule', (req, res)=> {
 			}
 		},
 		going: {
-			time: req.body.time3 || '？月？日 ~ ？月？日',
+			time: req.body.time3 || [dateFormat, dateFormat],
 			text: req.body.text3 || '该项目已进入代码开发阶段。',
 			taskbars: {
 				frontEnd: req.body.frontEnd || defaultId,
@@ -60,12 +67,12 @@ router.post('/:id/schedule', (req, res)=> {
 			}
 		},
 		check: {
-			time: req.body.time4 || '？月？日 ~ ？月？日',
+			time: req.body.time4 || [dateFormat, dateFormat],
 			text: req.body.text4 || '该项目已部署上线。',
 			discussion: req.body.discussion4 || 'undefined'
 		},
 		finish: {
-			time: req.body.time5 || '？月？日',
+			time: req.body.time5 || [dateFormat],
 			text: req.body.text5 || '该项目已完结。',
 			discussion: req.body.discussion5 || '如需修改或添加功能，将在下一版本中更新。'
 		}
@@ -171,7 +178,21 @@ router.post('/schedule/:barid/task', (req, res)=> {
 	})
 })
 
+router.get('/', (req, res)=> {
+	Project.find({ }, {__v: 0, document: 0, designs: 0})
+	.exec((err, projects)=> {
+		if(err) return res.send(err)
+		res.send(projects)
+	})
+})
+
 router.get('/:id', (req, res)=> {
+	function dateChange(time) {
+		time[0] = moment(time[0]).format('MMM Do')
+		time[1] = moment(time[1]).format('MMM Do')
+		time = [time[0], time[1]]
+		return time
+	}
 	const projectId = req.params.id
 	Project.findOne({_id: projectId}, {__v: 0})
 	.populate({path: 'schedule',
@@ -187,6 +208,13 @@ router.get('/:id', (req, res)=> {
 	})
 	.exec((err, project)=> {
 		if(err) return res.send(err)
+		if(project.schedule) {
+			project.schedule.pending.time = dateChange(project.schedule.pending.time)
+			project.schedule.start.time = dateChange(project.schedule.start.time)
+			project.schedule.going.time = dateChange(project.schedule.going.time)
+			project.schedule.check.time = dateChange(project.schedule.check.time)
+			project.schedule.finish.time = dateChange(project.schedule.finish.time)
+		}
 		res.send(project)
 	})
 })
