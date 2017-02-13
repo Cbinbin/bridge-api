@@ -126,10 +126,94 @@ A small bridge.
 ```js
 		GET    http://localhost:2017/projecrt
 ```
+返回=>
+```js
+{
+	"_id": "xxx",        //
+	"title": "xxx",        //项目名称
+	"version": "xxx",        //项目版本
+	"picture": "xxx",        //项目图片
+	"cycle": 0,        //项目周期
+	"startDate": "xxx",        //项目开始时间
+	"endDate": "xxx",        //项目结束时间
+	"progression": "xxx",        //项目进度
+	"possessor": "xxx",        //客户
+	"schedule": "xxx",        //进度表
+	"developers": {        //开发者
+		"backEnd": [],        //后端
+		"backstage": [],        //后台管理
+		"frontEnd": []        //前端
+	}
+}
+```
+
 ### 查看项目详情
 ```js
 		GET    http://localhost:2017/projecrt/:id
 ```
+返回=>
+```js
+{
+	......
+	"schedule": {
+		"_id": "xxx",
+		"finish": {        //已完成
+			"text": "该项目已完结。",
+			"discussion": "如需修改或添加功能，将在下一版本中更新。",
+			"time": [
+				"xxx",
+				"Invalid date"
+			]
+		},
+		"check": {        //验收中
+			"text": "该项目已部署上线。",
+			"discussion": "xxx",
+			"time": [
+				"xxx",
+				"xxx"
+			]
+		},
+		"going": {        //开发阶段
+			"text": "该项目已进入代码开发阶段。",
+			"taskbars": {
+				"frontEnd": "xxx",
+				"backstage": "xxx",
+				"backEnd": "xxx"
+			},
+			"time": [
+				"xxx",
+				"xxx"
+			]
+		},
+		"start": {        //需求阶段
+			"text": "该项目已经正式启动。",
+			"discussion": "该阶段包括以下工作内容：",
+			"tasks": {
+				"txt1": "xxx",
+				"txt2": "xxx",
+				"txt3": "xxx",
+				"txt4": "xxx",
+				"txt5": "xxx",
+				"txt6": "xxx"
+			},
+			"time": [
+				"xxx",
+				"xxx"
+			]
+		},
+		"pending": {        //待处理
+			"text": "该项目暂未开始，待处理。",
+			"discussion": "xxx",
+			"time": [
+				"xxx",
+				"xxx"
+			]
+		}
+	},
+	......
+}
+```
+
 ### 查看设计图
 ```js
 		GET    http://localhost:2017/projecrt/:id/design
