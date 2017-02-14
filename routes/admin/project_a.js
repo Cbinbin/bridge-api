@@ -6,6 +6,7 @@ const router = require('express').Router()
 	, Schedule = require('../../models/Schedule')
 	, Taskbar = require('../../models/Taskbar')
 	, Task = require('../../models/Task')
+	, Content = require('../../models/Content')
 	, host = require('../../utils/hosturl')
 	, upload = require('../../utils/upload')
 	, delFile = require('../../utils/delFile')
@@ -154,26 +155,42 @@ router.post('/:id/schedule', (req, res)=> {
 		}
 	})
 })
-//更改进度时间
-router.patch('/:id/schedule', (req, res)=> {
+//添加需求内容
+router.post('/:id/start', (req, res)=> {
 	const projectId = req.params.id
-	Project.findOne({_id: projectId})
-	.exec((err, project)=> {
+	Schedule.findOne({projectId: projectId})
+	.exec((err, schedule)=> {
 		if(err) return res.send(err)
-		if(!project) return res.send({error: 'Not found the project '})
-		Schedule.findOne({_id: project.schedule})
-		.exec((err, schedule)=> {
+		if(!schedule) return res.send({error: 'Not found the schedule '})
+		const content = new Content({
+			projectId: projectId,
+			content: req.body.content
+		})
+		content.save((err)=> {
 			if(err) return res.send(err)
-			if(!schedule) return res.send({error: 'Not found the schedule '})
-			if(req.body.t1) schedule.pending.time = [req.body.t1, '']
-			if(req.body.t2 || req.body.t3) schedule.start.time = [req.body.t2, req.body.t3]
-			if(req.body.t4 || req.body.t5) schedule.going.time = [req.body.t4, req.body.t5]
-			if(req.body.t6 || req.body.t7) schedule.check.time = [req.body.t6, req.body.t7]
-			if(req.body.t8) schedule.finish.time = [req.body.t8, '']
+			schedule.start.contents.push(content._id)
 			schedule.save((err)=> {
 				if(err) return res.send(err)
 				res.send(schedule)
 			})
+		})
+	})
+})
+//更改进度时间
+router.patch('/:id/schedule', (req, res)=> {
+	const projectId = req.params.id
+	Schedule.findOne({projectId: projectId})
+	.exec((err, schedule)=> {
+		if(err) return res.send(err)
+		if(!schedule) return res.send({error: 'Not found the schedule '})
+		if(req.body.t1) schedule.pending.time = [req.body.t1, '']
+		if(req.body.t2 || req.body.t3) schedule.start.time = [req.body.t2, req.body.t3]
+		if(req.body.t4 || req.body.t5) schedule.going.time = [req.body.t4, req.body.t5]
+		if(req.body.t6 || req.body.t7) schedule.check.time = [req.body.t6, req.body.t7]
+		if(req.body.t8) schedule.finish.time = [req.body.t8, '']
+		schedule.save((err)=> {
+			if(err) return res.send(err)
+			res.send(schedule)
 		})
 	})
 })
