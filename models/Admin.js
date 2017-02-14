@@ -4,7 +4,8 @@ const mongoose = require('mongoose')
 const adminSchema = new Schema({
 	admin: { 
 		type: String,
-		required: true
+		required: true,
+		unique: true
 	},
 	password: { 
 		type: String,

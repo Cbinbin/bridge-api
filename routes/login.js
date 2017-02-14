@@ -1,6 +1,7 @@
 const router = require('express').Router()
 	, Admin = require('../models/Admin')
 	, jwt = require('jsonwebtoken')
+	, ntSalt = process.env.NEWTEO
 
 router.post('/', (req, res)=> {
 	Admin.findOne({admin: req.body.admin})
@@ -10,7 +11,7 @@ router.post('/', (req, res)=> {
 		if(keeper.password == req.body.password) {
 			jwt.sign(
 				{},
-				'newteo',
+				ntSalt,
 				{expiresIn: '8h'}, 
 				(err, token) => {
 					if(err) return res.send(err)

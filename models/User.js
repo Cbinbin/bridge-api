@@ -5,13 +5,10 @@ const mongoose = require('mongoose')
 const userSchema = new Schema({
 	//普通用户字段
 	openid: { type: String },
-	nickname: { type: String },
-	sex: { type: String },
-	headimg: { type: String },
-	origin: { type: String },
+	wxInfo: { type: Object },
 	mold: { 
 		type: String, 
-		enum: ['ordinary', 'customer', 'developer'] 
+		enum: ['user', 'customer', 'developer'] 
 	},
 	//开发者字段
 	position: { type: String },
@@ -50,10 +47,18 @@ const userSchema = new Schema({
 		ref:'Project' 
 	}],
 	remark: { type: String },
-	createdAt: {
+	createdTime: {
 		type: Date, 
 		default: Date.now
 	},
-	updatedAt: { type: Date }
+	updatedTime: {
+		type: Date, 
+		default: Date.now
+	}
+},{
+	timestamps: {
+		createdAt: 'createdTime',
+		updatedAt: 'updatedTime'
+	}
 })
 module.exports = mongoose.model('User', userSchema)

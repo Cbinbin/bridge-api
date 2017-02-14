@@ -7,7 +7,23 @@ A small bridge.
 ## 管理员
 ### 新增管理员
 ```js
-		POST    http://localhost:2017/admin
+		POST    http://localhost:2017/reg?pass=${pass}
+```
+```js
+{
+	admin: ${admin},
+	password: ${password}
+}
+```
+### 登录
+```js
+		POST    http://localhost:2017/login
+```
+```js
+{
+	admin: "xxx",
+	password: "password"
+}
 ```
 ### 删除管理员
 ```js
@@ -67,14 +83,39 @@ A small bridge.
 ```js
 		POST    http://localhost:2017/admin/project?token=${token}
 ```
+```js
+{
+	title: ${title},        //项目名称(String)
+	version: ${version},        //项目版本(String)
+	picture: ${picture},        //项目图片(String)
+	cycle: ${cycle},        //项目周期(Number)
+	startDate: ${startDate},        //项目开始时间(Date)
+	endDate: ${endDate},        //项目结束时间(Date)
+	progression: ${progression}        //项目进度(String)
+}
+//可以不填字段自动生成
+```
+
 ### 更改项目
-* 1. 改图片
+* 1. 改图片(上传)
 ```js
 		POST    http://localhost:2017/admin/project/:id/pic?token=${token}
 ```
+key: picture
 * 2. 其他
 ```js
-		PATCH    http://localhost:2017/admin/project/:id?token=${token}
+		PATCH    http://localhost:2017/admin/project/:id/change?token=${token}
+```
+```js
+{
+	title: "xxx",
+	version: "xxx",
+	cycle: "xxx",
+	startDate: "xxx",
+	endDate: "xxx",
+	progression: "xxx"
+	//(可选项更改)
+}
 ```
 * 3. 添加设计图
 ```js
@@ -88,13 +129,41 @@ A small bridge.
 ```js
 		POST    http://localhost:2017/admin/project/:id/schedule?token=${token}
 ```
+```js
+{
+	time1: ${time1},        //时间([Date, Date])
+	time2: ${time2},        //时间([Date, Date])
+	time3: ${time3},        //时间([Date, Date])
+	time4: ${time4},        //时间([Date, Date])
+	time5: ${time5}        //时间([Date, Date])
+}
+//可以不填字段自动生成
+```
 ### 更改进度时间
 ```js
 		PATCH    http://localhost:2017/admin/project/:id/schedule?token=${token}
 ```
-### 添加任务(分3类)
+### 添加任务栏(分3类)
 ```js
 		POST    http://localhost:2017/admin/project/:id/schedule/:part?token=${token}
+```
+part: frontEnd || backstage || backEnd 
+```js
+{
+	txt: ${txt},        //任务(String)
+	completion: ${completion}        //完成状态(Boolean)
+}
+```
+### 添加任务
+```js
+		POST    http://localhost:2017/admin/project/schedule/:barid/task?token=${token}
+```
+barid为上一步添加任务栏返回的Id
+```js
+{
+	txt: ${txt},        //任务(String)
+	completion: ${completion}        //完成状态(Boolean)
+}
 ```
 ### 更改任务
 ```js
