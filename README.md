@@ -38,46 +38,36 @@ A small bridge.
 ```js
 		GET    http://localhost:2017/admin/user?token=${token}
 ```
+### 更改信息
+```js
+		PATCH    http://localhost:2017/admin/user/:id?token=${token}
+```
 ### 删除信息
 ```js
 		DELETE    http://localhost:2017/admin/user/:id?token=${token}
 ```
-## 客户
-### 新增
+
+### 客户
+### 查看信息
 ```js
-		POST    http://localhost:2017/admin/customer?token=${token}
+		GET    http://localhost:2017/admin/customer?token=${token}
 ```
 ### 更改信息
-1. 改图片
-```js
-		POST    http://localhost:2017/admin/customer/:id/img?token=${token}
-```
-2. 其他
 ```js
 		PATCH    http://localhost:2017/admin/customer/:id?token=${token}
 ```
-### 删除信息
-```js
-		DELETE    http://localhost:2017/admin/customer/:id?token=${token}
-```
+
 ## 开发者
-### 新增
+### 查看信息
 ```js
-		POST    http://localhost:2017/admin/developer?token=${token}
+		GET    http://localhost:2017/admin/developer?token=${token}
 ```
 ### 更改信息
-1. 改图片
-```js
-		POST    http://localhost:2017/admin/developer/:id/img?token=${token}
-```
-2. 其他
 ```js
 		PATCH    http://localhost:2017/admin/developer/:id?token=${token}
 ```
-### 删除信息
-```js
-		DELETE    http://localhost:2017/admin/developer/:id?token=${token}
-```
+
+
 ## 项目
 ### 添加项目
 ```js
@@ -101,7 +91,9 @@ A small bridge.
 ```js
 		POST    http://localhost:2017/admin/project/:id/pic?token=${token}
 ```
-key: picture
+key: picture    
+返回=>  项目    
+
 * 2. 其他
 ```js
 		PATCH    http://localhost:2017/admin/project/:id/change?token=${token}
@@ -125,7 +117,7 @@ key: picture
 ```js
 		DELETE    http://localhost:2017/admin/project/:projectId/design/:designId?token=${token}
 ```
-### 添加进度时间
+### 添加进度(时间及其他)
 ```js
 		POST    http://localhost:2017/admin/project/:id/schedule?token=${token}
 ```
@@ -135,7 +127,17 @@ key: picture
 	time2: ${time2},        //时间([Date, Date])
 	time3: ${time3},        //时间([Date, Date])
 	time4: ${time4},        //时间([Date, Date])
-	time5: ${time5}        //时间(Date)
+	time5: ${time5},        //时间(Date)
+	// text1: ${text1},        //文案(String)
+	// text2: ${text2},        //文案([String, String])
+	// text3: ${text3},        //文案([String, String])
+	// text4: ${text4},        //文案([String, String])
+	// text5: ${text5},        //文案(String)
+	// discussion1: ${discussion1},        //文案(String)
+	// discussion2: ${discussion2},        //文案([String, String])
+	// discussion3: ${discussion3},        //文案([String, String])
+	// discussion4: ${discussion4},        //文案([String, String])
+	// discussion5: ${discussion5},        //文案(String)
 }
 //eq.  Date格式可以为‘2017-2-14 16:16:16’    
 //可以不填字段自动生成    
@@ -144,6 +146,20 @@ key: picture
 ```js
 		PATCH    http://localhost:2017/admin/project/:id/schedule?token=${token}
 ```
+```js
+{
+	t1: ${t1},        //时间(Date)
+	t2: ${t2},
+	t3: ${t3},
+	t4: ${t4},
+	t5: ${t5},
+	t6: ${t6},
+	t7: ${t7},
+	t8: ${t8}
+}
+```
+返回=>  进度    
+
 ### 添加任务栏(分3类)
 ```js
 		POST    http://localhost:2017/admin/project/:id/schedule/:part?token=${token}
