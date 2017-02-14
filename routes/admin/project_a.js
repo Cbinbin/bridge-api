@@ -85,7 +85,7 @@ router.patch('/:id/change', (req, res)=> {
 	Project.findOne({_id: projectId})
 	.exec((err, project)=> {
 		if(err) return res.send(err)
-		if(!project) return res.send({error: 'Not'})
+		if(!project) return res.send({error: 'Not found the project '})
 		if(req.body.title) project.title = req.body.title
 		if(req.body.version) project.version = req.body.version
 		if(req.body.cycle) project.cycle = req.body.cycle
@@ -105,7 +105,7 @@ router.post('/:id/schedule', (req, res)=> {
 	const schedule = new Schedule({
 		projectId: projectId,
 		pending: {
-			time: [req.body.time1, ''] || [dateFormat, ''],
+			time: [req.body.time1 || dateFormat, ''],
 			text: req.body.text1 || '该项目暂未开始，待处理。',
 			discussion: req.body.discussion1 || 'undefined'
 		},
@@ -113,14 +113,7 @@ router.post('/:id/schedule', (req, res)=> {
 			time: req.body.time2 || [dateFormat, dateFormat],
 			text: req.body.text2 || '该项目已经正式启动。',
 			discussion: req.body.discussion2 || '该阶段包括以下工作内容：',
-			tasks: {
-				txt1: req.body.txt1 || 'undefined',
-				txt2: req.body.txt2 || 'undefined',
-				txt3: req.body.txt3 || 'undefined',
-				txt4: req.body.txt4 || 'undefined',
-				txt5: req.body.txt5 || 'undefined',
-				txt6: req.body.txt6 || 'undefined',
-			}
+			contents: req.body.contents || []
 		},
 		going: {
 			time: req.body.time3 || [dateFormat, dateFormat],
@@ -137,7 +130,7 @@ router.post('/:id/schedule', (req, res)=> {
 			discussion: req.body.discussion4 || 'undefined'
 		},
 		finish: {
-			time: [req.body.time5, ''] || [dateFormat, ''],
+			time: [req.body.time5 || dateFormat, ''],
 			text: req.body.text5 || '该项目已完结。',
 			discussion: req.body.discussion5 || '如需修改或添加功能，将在下一版本中更新。'
 		}
@@ -161,9 +154,28 @@ router.post('/:id/schedule', (req, res)=> {
 		}
 	})
 })
-//
-router.patch('', (req, res)=> {
-	
+//更改进度时间
+router.patch('/:id/schedule', (req, res)=> {
+	const projectId = req.params.id
+	Project.findOne({_id: projectId})
+	.exec((err, project)=> {
+		if(err) return res.send(err)
+		if(!project) return res.send({error: 'Not found the project '})
+		Schedule.findOne({_id: project.schedule})
+		.exec((err, schedule)=> {
+			if(err) return res.send(err)
+			if(!schedule) return res.send({error: 'Not found the schedule '})
+			if(req.body.t1) schedule.pending.time = [req.body.t1, '']
+			if(req.body.t2 || req.body.t3) schedule.start.time = [req.body.t2, req.body.t3]
+			if(req.body.t4 || req.body.t5) schedule.going.time = [req.body.t4, req.body.t5]
+			if(req.body.t6 || req.body.t7) schedule.check.time = [req.body.t6, req.body.t7]
+			if(req.body.t8) schedule.finish.time = [req.body.t8, '']
+			schedule.save((err)=> {
+				if(err) return res.send(err)
+				res.send(schedule)
+			})
+		})
+	})
 })
 //创建任务栏
 router.post('/:id/schedule/:part', (req, res)=> {

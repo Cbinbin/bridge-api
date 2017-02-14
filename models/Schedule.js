@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 	, Schema = mongoose.Schema
 	, Project = require('./Project')
 	, Taskbar = require('./Taskbar')
+	, Content = require('./Content')
 
 const scheduleSchema = new Schema({
 	projectId: { 
@@ -21,14 +22,10 @@ const scheduleSchema = new Schema({
 		}],
 		text: String,
 		discussion: String,
-		tasks: {
-			txt1: String,
-			txt2: String,
-			txt3: String,
-			txt4: String,
-			txt5: String,
-			txt6: String,
-		}
+		contents: [{
+			type: Schema.Types.ObjectId, 
+			ref: 'Content'
+		}]
 	},
 	going: {
 		time: [{

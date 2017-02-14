@@ -34,6 +34,7 @@ router.get('/:id', (req, res)=> {
 	})
 	.exec((err, project)=> {
 		if(err) return res.send(err)
+		if(!project) return res.json({error: 'Not found the project'})
 		if(project.schedule) {
 			project.schedule.pending.time = dateChange(project.schedule.pending.time)
 			project.schedule.start.time = dateChange(project.schedule.start.time)
