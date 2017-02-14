@@ -131,13 +131,14 @@ key: picture
 ```
 ```js
 {
-	time1: ${time1},        //时间([Date, Date])
+	time1: ${time1},        //时间(Date)
 	time2: ${time2},        //时间([Date, Date])
 	time3: ${time3},        //时间([Date, Date])
 	time4: ${time4},        //时间([Date, Date])
-	time5: ${time5}        //时间([Date, Date])
+	time5: ${time5}        //时间(Date)
 }
-//可以不填字段自动生成
+//eq.  Date格式可以为‘2017-2-14 16:16:16’    
+//可以不填字段自动生成    
 ```
 ### 更改进度时间
 ```js
