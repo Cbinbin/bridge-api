@@ -1,16 +1,14 @@
 const router = require('express').Router()
-	, Admin = require('../models/Admin')
-	, jwt = require('jsonwebtoken')
+	, moment = require('moment')
 	, mongoose = require('mongoose')
 	, defaultId = new mongoose.Types.ObjectId('000000000000000000000000')
-	, moment = require('moment')
-	, Project = require('../models/Project')
-	, Schedule = require('../models/Schedule')
-	, Taskbar = require('../models/Taskbar')
-	, Task = require('../models/Task')
-	, host = require('../utils/hosturl')
-	, upload = require('../utils/upload')
-	, delFile = require('../utils/delFile')
+	, Project = require('../../models/Project')
+	, Schedule = require('../../models/Schedule')
+	, Taskbar = require('../../models/Taskbar')
+	, Task = require('../../models/Task')
+	, host = require('../../utils/hosturl')
+	, upload = require('../../utils/upload')
+	, delFile = require('../../utils/delFile')
 	, datenow = new Date()
 
 
@@ -43,7 +41,7 @@ function scheduleChange(part, projectId, taskbarId) {
 	})
 }
 //创建项目
-router.post('/project', (req, res)=> {
+router.post('/', (req, res)=> {
 	const project = new Project({
 		title: req.body.title || '空',
 		version: req.body.version || '空',
@@ -64,7 +62,7 @@ router.post('/project', (req, res)=> {
 	})
 })
 //改项目图
-router.post('/project/:id/pic', (req, res)=> {
+router.post('/:id/pic', (req, res)=> {
 	const projectId = req.params.id
 	const picUpload = upload('pics', 'picture')
 	picUpload(req, res, (err)=> {
@@ -82,7 +80,7 @@ router.post('/project/:id/pic', (req, res)=> {
 	})
 })
 //更改项目详情
-router.patch('/project/:id/change', (req, res)=> {
+router.patch('/:id/change', (req, res)=> {
 	const projectId = req.params.id
 	Project.findOne({_id: projectId})
 	.exec((err, project)=> {
@@ -101,13 +99,13 @@ router.patch('/project/:id/change', (req, res)=> {
 	})
 })
 //创建进度
-router.post('/project/:id/schedule', (req, res)=> {
+router.post('/:id/schedule', (req, res)=> {
 	const projectId = req.params.id
-	dateFormat = moment(datenow).format('MMM Do')
+	dateFormat = moment(datenow).format('L')
 	const schedule = new Schedule({
 		projectId: projectId,
 		pending: {
-			time: req.body.time1 || [dateFormat],
+			time: [req.body.time1, ''] || [dateFormat, ''],
 			text: req.body.text1 || '该项目暂未开始，待处理。',
 			discussion: req.body.discussion1 || 'undefined'
 		},
@@ -139,7 +137,7 @@ router.post('/project/:id/schedule', (req, res)=> {
 			discussion: req.body.discussion4 || 'undefined'
 		},
 		finish: {
-			time: req.body.time5 || [dateFormat],
+			time: [req.body.time5, ''] || [dateFormat, ''],
 			text: req.body.text5 || '该项目已完结。',
 			discussion: req.body.discussion5 || '如需修改或添加功能，将在下一版本中更新。'
 		}
@@ -168,7 +166,7 @@ router.patch('', (req, res)=> {
 	
 })
 //创建任务栏
-router.post('/project/:id/schedule/:part', (req, res)=> {
+router.post('/:id/schedule/:part', (req, res)=> {
 	const projectId = req.params.id
 		, part = req.params.part
 	Schedule.findOne({projectId: projectId})
@@ -202,7 +200,7 @@ router.post('/project/:id/schedule/:part', (req, res)=> {
 	})
 })
 //添加单个任务
-router.post('/project/schedule/:barid/task', (req, res)=> {
+router.post('/schedule/:barid/task', (req, res)=> {
 	const barId = req.params.barid
 	const task = new Task({
 		txt: req.body.txt || '暂无',
@@ -218,14 +216,6 @@ router.post('/project/schedule/:barid/task', (req, res)=> {
 			res.send(task)
 		})
 	})
-})
-
-router.get('/', (req, res)=> {
-
-})
-
-router.post('/', (req, res)=> {
-	
 })
 
 module.exports = router
