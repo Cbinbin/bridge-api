@@ -3,6 +3,7 @@ const router = require('express').Router()
 	, mongoose = require('mongoose')
 	, defaultId = new mongoose.Types.ObjectId('000000000000000000000000')
 	, Project = require('../../models/Project')
+	, Design = require('../../models/Design')
 	, Schedule = require('../../models/Schedule')
 	, Taskbar = require('../../models/Taskbar')
 	, Task = require('../../models/Task')
@@ -37,10 +38,11 @@ function scheduleChange(part, projectId, taskbarId) {
 		}
 		schedule.save((err)=> {
 			if(err) return console.log(err)
-			console.log(schedule)
 		})
 	})
 }
+//----------------------------------------------------------------------------------------------------------
+
 //创建项目
 router.post('/', (req, res)=> {
 	const project = new Project({
@@ -99,6 +101,57 @@ router.patch('/:id/change', (req, res)=> {
 		})
 	})
 })
+//删除项目
+router.get('/:id', (req, res)=> {
+	const projectId = req.params.id
+
+})
+//------------------------------------------------------------------------------------------------------------------
+
+//添加设计图
+router.post('/:id/design', (req, res)=> {
+	const projectId = req.params.id
+	const designUpload = upload('designs', 'design')
+	designUpload(req, res, (err)=> {
+		if(err) return res.send('something wrong')
+		const design = new Design({
+			filename: req.file.originalname,
+			designUrl: host.bridge + req.file.path
+		})
+		design.save((err)=> {
+			if(err) return res.send(err)
+			Project.update({_id: projectId}, 
+			{$push: {designs: design._id}}, 
+			(err, result)=> {
+				if(err) return console.log(err)
+			})
+			res.send(design)
+		})
+	})
+})
+//删除设计图
+router.delete('/:id/design/:designId', (req, res)=> {
+	const projectId = req.params.id
+		, designId = req.params.designId
+	Project.update({_id: projectId}, 
+	{$pull: {designs: designId}},
+	(err, result)=> {
+		if(err) return console.log(err)
+	})
+	Design.findOne({_id: designId})
+	.exec((err, design)=> {
+		if(err) return res.send(err)
+		if(!design) return res.send({error: 'Not found the design'})
+		delFile(design.designUrl)
+		Design.remove({_id: designId})
+		.exec((err)=> {
+			if(err) return res.send(err)
+			res.json({message: 'the design delete success'})
+		})
+	})
+})
+//------------------------------------------------------------------------------------------------------------------
+
 //创建进度
 router.post('/:id/schedule', (req, res)=> {
 	const projectId = req.params.id
@@ -146,34 +199,13 @@ router.post('/:id/schedule', (req, res)=> {
 				{$set: {schedule: schedule._id}},
 				(err, result)=> {
 					if(err) return res.send(err)
-					console.log(result)
+					// console.log(result)
 				})
 				res.send(schedule)
 			})
 		} else {
 			res.send('该项目已添加过进度')
 		}
-	})
-})
-//添加需求内容
-router.post('/:id/start', (req, res)=> {
-	const projectId = req.params.id
-	Schedule.findOne({projectId: projectId})
-	.exec((err, schedule)=> {
-		if(err) return res.send(err)
-		if(!schedule) return res.send({error: 'Not found the schedule '})
-		const content = new Content({
-			projectId: projectId,
-			content: req.body.content
-		})
-		content.save((err)=> {
-			if(err) return res.send(err)
-			schedule.start.contents.push(content._id)
-			schedule.save((err)=> {
-				if(err) return res.send(err)
-				res.send(schedule)
-			})
-		})
 	})
 })
 //更改进度时间
@@ -213,6 +245,7 @@ router.post('/:id/schedule/:part', (req, res)=> {
 				column: []
 			})
 			const task = new Task({
+				projectId: projectId,
 				txt: req.body.txt || '暂无',
 				completion: req.body.completion || false
 			})
@@ -231,18 +264,103 @@ router.post('/:id/schedule/:part', (req, res)=> {
 //添加单个任务
 router.post('/schedule/:barid/task', (req, res)=> {
 	const barId = req.params.barid
-	const task = new Task({
-		txt: req.body.txt || '暂无',
-		completion: req.body.completion || false
-	})
-	task.save((err)=> {
+	Taskbar.findOne({_id: barId})
+	.exec((err, taskbar)=> {
 		if(err) return res.send(err)
-		Taskbar.update({_id: barId},
-		{$push: {column: task._id}},
-		(err, txt)=> {
+		if(!taskbar) return res.send('Not found taskbar')
+		const task = new Task({
+			projectId: taskbar.projectId,
+			txt: req.body.txt || '暂无',
+			completion: req.body.completion || false
+		})
+		task.save((err)=> {
 			if(err) return res.send(err)
-			console.log(txt)
-			res.send(task)
+			Taskbar.update({_id: barId},
+			{$push: {column: task._id}},
+			(err, txt)=> {
+				if(err) return res.send(err)
+				// console.log(txt)
+				res.send(task)
+			})
+		})
+	})
+})
+//更改任务
+router.patch('/schedule/task/:taskId', (req, res)=> {
+	const taskId = req.params.taskId
+	Task.findOne({_id: taskId})
+	.exec((err, task)=> {
+		if(err) return res.send(err)
+		if(!task) return res.send('Not found task')
+		Task.findOneAndUpdate({_id: taskId}, 
+		{$set: {txt: req.body.txt || task.txt, completion: req.body.completion || task.completion}}, 
+		{new: true}, 
+		(err, newtask)=> {
+			if(err) return res.send(err)
+			res.send(newtask)
+		})
+	})
+})
+//删除任务
+router.delete('/schedule/task/:taskId', (req, res)=> {
+	const taskId = req.params.taskId
+	Taskbar.findOne()
+	.where('column').in([taskId])
+	.exec((err, taskbar)=> {
+		if(err) return res.send(err)
+		if(!taskbar) return res.send('Not found taskbar')
+		Taskbar.findOneAndUpdate({_id: taskbar._id}, 
+		{$pull: {column: taskId}}, 
+		{new: true}, 
+		(err, newbar)=> {
+			if(err) return res.send(err)
+			Task.remove({_id: taskId})
+			.exec((err)=> {
+				if(err) return res.send(err)
+				res.json({message: 'the task delete success'})
+			})
+		})
+	})
+})
+//--------------------------------------------------------------------------------------------------------------------------
+
+//添加需求内容
+router.post('/:id/start', (req, res)=> {
+	const projectId = req.params.id
+	Schedule.findOne({projectId: projectId})
+	.exec((err, schedule)=> {
+		if(err) return res.send(err)
+		if(!schedule) return res.send({error: 'Not found the schedule '})
+		const content = new Content({
+			projectId: projectId,
+			content: req.body.content
+		})
+		content.save((err)=> {
+			if(err) return res.send(err)
+			schedule.start.contents.push(content._id)
+			schedule.save((err)=> {
+				if(err) return res.send(err)
+				res.send(schedule)
+			})
+		})
+	})
+})
+//删除需求内容
+router.delete('/schedule/content/:contentId', (req, res)=> {
+	const contentId = req.params.contentId
+	Schedule.findOne()
+	.where('start.contents').in([contentId])
+	.exec((err, schedule)=> {
+		if(err) return res.send(err)
+		if(!schedule) return res.send('Not found schedule')
+		schedule.start.contents.pull(contentId)
+		schedule.save((err)=> {
+			if(err) return res.send(err)
+			Content.remove({_id: contentId})
+			.exec((err)=> {
+				if(err) return res.send(err)
+				res.json({message: 'the content delete success'})
+			})
 		})
 	})
 })

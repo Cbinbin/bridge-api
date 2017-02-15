@@ -42,6 +42,15 @@ A small bridge.
 ```js
 		PATCH    http://localhost:2017/admin/user/:id?token=${token}
 ```
+### 变更用户类型
+```js
+		PATCH    http://localhost:2017/admin/user/:id/mold?token=${token}
+```
+```js
+{
+	mold: ${mold}        //用户类型['user', 'customer', 'developer']
+}
+```
 ### 删除信息
 ```js
 		DELETE    http://localhost:2017/admin/user/:id?token=${token}
@@ -85,6 +94,10 @@ A small bridge.
 }
 //可以不填字段自动生成
 ```
+### 删除项目
+```js
+		DELETE    http://localhost:2017/admin/project/:id?token=${token}
+```
 
 ### 更改项目
 * 1. 改图片(上传)
@@ -113,10 +126,20 @@ key: picture
 ```js
 		POST    http://localhost:2017/admin/project/:id/design?token=${token}
 ```
+// 保存后，filename存的是上传时的文件名    
+返回=>  
+```js
+{
+	filename: "xxx",        //图片名(String)
+	designUrl: "xxx"        //图片路径(String)
+}
+```
 * 4. 删除设计图
 ```js
-		DELETE    http://localhost:2017/admin/project/:projectId/design/:designId?token=${token}
+		DELETE    http://localhost:2017/admin/project/:id/design/:designId?token=${token}
 ```
+返回=>  "message": "the design delete success"    
+
 ### 添加进度(时间及其他)
 ```js
 		POST    http://localhost:2017/admin/project/:id/schedule?token=${token}
@@ -184,8 +207,35 @@ barid为上一步添加任务栏返回的Id
 ```
 ### 更改任务
 ```js
-		PATCH    http://localhost:2017/admin/project/schedule/:id/task?token=${token}
+		PATCH    http://localhost:2017/admin/project/schedule/task/:taskId?token=${token}
 ```
+```js
+{
+	txt: ${txt},        //任务(String)
+	completion: ${completion}        //完成状态(Boolean)
+}
+```
+### 删除任务
+```js
+		DELETE    http://localhost:2017/admin/project/schedule/task/:taskId?token=${token}
+```
+返回=>  "message": "the task delete success"    
+
+### 添加需求阶段内容
+```js
+		POST    http://localhost:2017/admin/project/:id/start?token=${token}
+```
+```js
+{
+	content: ${content}        //内容(String)
+}
+```
+### 删除需求内容
+```js
+		DELETE    http://localhost:2017/admin/project/schedule/content/:contentId?token=${token}
+```
+返回=>  "message": "the content delete success"    
+
 ### 查看项目列表
 ```js
 		GET    http://localhost:2017/admin/project?token=${token}
@@ -194,11 +244,7 @@ barid为上一步添加任务栏返回的Id
 ```js
 		GET    http://localhost:2017/admin/project/:id?token=${token}
 ```
-### 删除项目
-```js
-		DELETE    http://localhost:2017/admin/project/:id?token=${token}
-```
-
+    
 
 
 # (bridge)

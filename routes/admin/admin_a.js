@@ -14,7 +14,7 @@ router.delete('/:id', (req, res)=> {
 	Admin.remove({_id: adminId})
 	.exec((err)=> {
 		if(err) return res.send(err)
-		res.send('the admin delete success')
+		res.json({message: 'the admin delete success'})
 	})
 })
 

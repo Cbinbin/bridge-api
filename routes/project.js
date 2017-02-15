@@ -24,8 +24,8 @@ router.get('/:id', (req, res)=> {
 	.populate({path: 'schedule',
 		select: 'finish check going start pending',
 		populate: {
-			path: 'going.taskbars.frontEnd going.taskbars.backstage going.taskbars.backEnd',
-			select: 'part column',
+			path: 'going.taskbars.frontEnd going.taskbars.backstage going.taskbars.backEnd start.contents',
+			select: 'part column content',
 			populate: {
 				path: 'column',
 				select: 'txt completion'

@@ -1,3 +1,3 @@
 module.exports = {
-	bridge: 'http://localhost:2017/'
+	bridge: 'http://api.cbinbin.xyz/'
 }

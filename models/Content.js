@@ -7,6 +7,9 @@ const contentSchema = new Schema({
 		type: Schema.Types.ObjectId, 
 		ref: 'Project'
 	},
-	content: {type: String}
+	content: {
+		type: String,
+		required: true
+	}
 })
 module.exports = mongoose.model('Content', contentSchema)
