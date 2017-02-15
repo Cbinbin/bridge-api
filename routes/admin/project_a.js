@@ -4,6 +4,7 @@ const router = require('express').Router()
 	, defaultId = new mongoose.Types.ObjectId('000000000000000000000000')
 	, Project = require('../../models/Project')
 	, Design = require('../../models/Design')
+	, Document = require('../../models/Document')
 	, Schedule = require('../../models/Schedule')
 	, Taskbar = require('../../models/Taskbar')
 	, Task = require('../../models/Task')
@@ -13,6 +14,19 @@ const router = require('express').Router()
 	, delFile = require('../../utils/delFile')
 	, datenow = new Date()
 
+function removeId(Model, id) {
+	Model.remove({projectId: id})
+	.exec((err)=> {
+		if(err) return console.log(err)
+	})
+}
+
+function dateChange(time) {
+	time[0] = moment(time[0]).format('MMM Do')
+	time[1] = moment(time[1]).format('MMM Do')
+	time = [time[0], time[1]]
+	return time
+}
 
 function findTaskbarId(part, schedule) {
 	if(part == 'frontEnd') {
@@ -41,6 +55,21 @@ function scheduleChange(part, projectId, taskbarId) {
 		})
 	})
 }
+
+function removeDesign(id) {
+	Design.findOne({_id: id})
+	.exec((err, design)=> {
+		if(err) return console.log(err)
+		if(!design) return console.log(err)
+		delFile(design.designUrl)
+		Design.remove({_id: design._id})
+		.exec((err)=> {
+			if(err) return console.log(err)
+
+		})
+	})
+}
+
 //----------------------------------------------------------------------------------------------------------
 
 //创建项目
@@ -102,9 +131,30 @@ router.patch('/:id/change', (req, res)=> {
 	})
 })
 //删除项目
-router.get('/:id', (req, res)=> {
+router.delete('/:id', (req, res)=> {
 	const projectId = req.params.id
-
+	removeId(Task, projectId)
+	removeId(Taskbar, projectId)
+	removeId(Content, projectId)
+	removeId(Schedule, projectId)
+	Project.findOne({_id: projectId})
+	.exec((err, project)=> {
+		if(err) return res.send(err)
+		if(!project) return res.send({error: 'Not found the project'})
+		delFile(project.picture)
+		if(project.designs) {
+			project.designs.map((item)=> {
+				removeDesign(item)
+			})
+		}
+		Document.remove({_id: project.document}, (err)=> {
+			if(err) return console.log(err)
+			Project.remove({_id: project._id}, (err)=> {
+				if(err) return res.send(err)
+				res.json({message: 'the project delete success'})
+			})
+		})
+	})
 })
 //------------------------------------------------------------------------------------------------------------------
 
@@ -148,6 +198,37 @@ router.delete('/:id/design/:designId', (req, res)=> {
 			if(err) return res.send(err)
 			res.json({message: 'the design delete success'})
 		})
+	})
+})
+//添加开发文档
+router.post('/:id/doc', (req, res)=> {
+	const projectId = req.params.id
+	const doc = new Document({
+		writer: req.body.writer
+	})
+	doc.save((err)=> {
+		if(err) return res.send(err)
+		Project.update({_id: projectId}, 
+		{$set: {document: doc._id}}, 
+		(err, result)=> {
+			if(err) return console.log(err)
+		})
+		res.send(doc)
+	})
+})
+//删除开发文档
+router.delete('/:id/doc/:docId', (req, res)=> {
+	const projectId = req.params.id
+		, docId = req.params.docId
+	Document.remove({_id: docId})
+	.exec((err)=> {
+		if(err) return res.send(err)
+		Project.update({_id: projectId}, 
+		{$set: {document: defaultId}},
+		(err, result)=> {
+			if(err) return console.log(err)
+		})
+		res.json({message: 'the doc delete success'})
 	})
 })
 //------------------------------------------------------------------------------------------------------------------
@@ -362,6 +443,46 @@ router.delete('/schedule/content/:contentId', (req, res)=> {
 				res.json({message: 'the content delete success'})
 			})
 		})
+	})
+})
+//-------------------------------------------------------------------------------------------------------
+
+//获取项目
+router.get('/', (req, res)=> {
+	Project.find({ }, {__v: 0, document: 0, designs: 0})
+	.exec((err, projects)=> {
+		if(err) return res.send(err)
+		res.send(projects)
+	})
+})
+//获取单个项目
+router.get('/:id', (req, res)=> {
+	const projectId = req.params.id
+	Project.findOne({_id: projectId}, {__v: 0})
+	.populate({path: 'schedule',
+		select: 'finish check going start pending',
+		populate: {
+			path: 'going.taskbars.frontEnd going.taskbars.backstage going.taskbars.backEnd start.contents',
+			select: 'part column content',
+			populate: {
+				path: 'column',
+				select: 'txt completion'
+			}
+		}
+	})
+	.populate('designs', 'filename designUrl')
+	.populate('document', 'writer')
+	.exec((err, project)=> {
+		if(err) return res.send(err)
+		if(!project) return res.json({error: 'Not found the project'})
+		if(project.schedule) {
+			project.schedule.pending.time = dateChange(project.schedule.pending.time)
+			project.schedule.start.time = dateChange(project.schedule.start.time)
+			project.schedule.going.time = dateChange(project.schedule.going.time)
+			project.schedule.check.time = dateChange(project.schedule.check.time)
+			project.schedule.finish.time = dateChange(project.schedule.finish.time)
+		}
+		res.send(project)
 	})
 })
 

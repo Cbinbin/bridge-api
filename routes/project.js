@@ -32,6 +32,8 @@ router.get('/:id', (req, res)=> {
 			}
 		}
 	})
+	.populate('designs', 'filename designUrl')
+	.populate('document', 'writer')
 	.exec((err, project)=> {
 		if(err) return res.send(err)
 		if(!project) return res.json({error: 'Not found the project'})
