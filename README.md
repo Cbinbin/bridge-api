@@ -98,6 +98,7 @@ A small bridge.
 ```js
 		DELETE    http://localhost:2017/admin/project/:id?token=${token}
 ```
+返回=>  "message": "the project delete success"
 
 ### 更改项目
 * 1. 改图片(上传)
@@ -139,6 +140,21 @@ key: picture
 		DELETE    http://localhost:2017/admin/project/:id/design/:designId?token=${token}
 ```
 返回=>  "message": "the design delete success"    
+* 5. 添加开发文档
+```js
+		POST    http://localhost:2017/admin/project/:id/doc?token=${token}
+```
+```js
+{
+	writer: ${writer}        //文档(String)
+}
+```
+    
+* 6. 删除开发文档
+```js
+		DELETE    http://localhost:2017/admin/project/:id/doc/:docId?token=${token}
+```
+返回=>  "message": "the doc delete success"    
 
 ### 添加进度(时间及其他)
 ```js
