@@ -269,8 +269,19 @@ barid为上一步添加任务栏返回的Id
 ## 用户
 ### 授权登录
 ```js
-		GET    http://localhost:2017/session?code=${code}&iv=${iv}&encryptedData=${encryptedData}
+		GET    http://localhost:2017/session?code=${code}&iv=${iv}&encryptedData=${encryptedData}&newteo=${newteo}
 ```
+接收参数如下：
+```js
+{
+	iv,               // required!
+	code,          // required!
+	newteo,        // required!
+	encryptedData,  // required!
+}
+```
+返回=>  token: ${token}    
+
 ## 项目
 ### 查看项目列表
 ```js
