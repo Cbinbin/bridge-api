@@ -1,6 +1,7 @@
 const router = require('express').Router()
 	, moment = require('moment')
 	, Project = require('../models/Project')
+	, checkToken = require('../utils/checkToken')
 
 function dateChange(time) {
 	time[0] = moment(time[0]).format('MMM Do')
@@ -9,9 +10,12 @@ function dateChange(time) {
 	return time
 }
 
+checkToken(router)
+
 //获取项目
 router.get('/', (req, res)=> {
-	Project.find({ }, {__v: 0, document: 0, designs: 0})
+	Project.find({ }, {__v: 0, startDate: 0, endDate: 0, schedule: 0, cycle: 0, document: 0, designs: 0})
+	.populate('possessor')
 	.exec((err, projects)=> {
 		if(err) return res.send(err)
 		res.send(projects)
@@ -34,6 +38,7 @@ router.get('/:id', (req, res)=> {
 	})
 	.populate('designs', 'filename designUrl')
 	.populate('document', 'writer')
+	.populate('possessor')
 	.exec((err, project)=> {
 		if(err) return res.send(err)
 		if(!project) return res.json({error: 'Not found the project'})
@@ -47,5 +52,12 @@ router.get('/:id', (req, res)=> {
 		res.send(project)
 	})
 })
+//
+router.get('/:id/design', (req, res)=> {
+	const projectId = req.params.id
+
+})
+//
+
 
 module.exports = router

@@ -3,6 +3,7 @@ const router = require('express').Router()
 	, jwt = require('jsonwebtoken')
 	, wxApis = require('../utils/wxApis')
 	, WXBizDataCrypt = require('../utils/WXBizDataCrypt')
+	,checkNewTeoBridge = require('../utils/checkNewTeoBridge')
 	, User = require('../models/User')
 	, salt = process.env.SALT
 	, xcxId = process.env.XCX_ID
@@ -12,13 +13,12 @@ function setinfo(wxInfo, res) {
 	User.findOne({openid: wxInfo.openId})
 	.exec((err, same)=> {
 		if(same) {
-			console.log(same)
 			jwt.sign(same.wxInfo, salt, 
 			{expiresIn: '7d'}, 
 			(err, token)=> {
 				if(err) return res.send(err)
-				console.log(salt)
-				res.send({token: token})
+				// console.log('ok')
+				res.send({openId: same.openid, token: token})
 			})
 		} else {
 			const info = new User({
@@ -32,14 +32,14 @@ function setinfo(wxInfo, res) {
 				{expiresIn: '7d'}, 
 				(err, token)=> {
 					if(err) return res.send(err)
-					res.send({token: token})
+					res.send({openId: info.openid, token: token})
 				})
 			})
 		}
 	})
 }
 
-// checkNewTeoBridge(router)
+checkNewTeoBridge(router)
 
 router.get('/', (req, res)=> {
 	const code = req.query.code
