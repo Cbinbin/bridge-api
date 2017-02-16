@@ -33,6 +33,8 @@ A small bridge.
 ```js
 		GET    http://localhost:2017/admin?token=${token}
 ```
+    
+
 ## 用户
 ### 查看信息
 ```js
@@ -267,7 +269,7 @@ barid为上一步添加任务栏返回的Id
 ## 用户
 ### 授权登录
 ```js
-		POST    http://localhost:2017/session?code=${code}&iv=${iv}&encryptedData=${encryptedData}
+		GET    http://localhost:2017/session?code=${code}&iv=${iv}&encryptedData=${encryptedData}
 ```
 ## 项目
 ### 查看项目列表
