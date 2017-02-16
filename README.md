@@ -35,7 +35,7 @@ A small bridge.
 ```
     
 
-## 用户
+<!-- ## 用户
 ### 查看信息
 ```js
 		GET    http://localhost:2017/admin/user?token=${token}
@@ -76,7 +76,7 @@ A small bridge.
 ### 更改信息
 ```js
 		PATCH    http://localhost:2017/admin/developer/:id?token=${token}
-```
+``` -->
 
 
 ## 项目
@@ -349,14 +349,14 @@ barid为上一步添加任务栏返回的Id
 		"start": {        //需求阶段
 			"text": "该项目已经正式启动。",
 			"discussion": "该阶段包括以下工作内容：",
-			"tasks": {
-				"txt1": "xxx",
-				"txt2": "xxx",
-				"txt3": "xxx",
-				"txt4": "xxx",
-				"txt5": "xxx",
-				"txt6": "xxx"
-			},
+			"tasks": [
+				{
+					"txt1": "xxx"
+				},
+				{
+					"txt2": "xxx"
+				}
+			],
 			"time": [
 				"xxx",
 				"xxx"
@@ -375,7 +375,7 @@ barid为上一步添加任务栏返回的Id
 }
 ```
 
-### 查看设计图
+<!-- ### 查看设计图
 ```js
 		GET    http://localhost:2017/projecrt/:id/design?token=${token}
 ```
@@ -385,9 +385,23 @@ barid为上一步添加任务栏返回的Id
 ```
 ### 查看阶段详情
 ```js
-		GET    http://localhost:2017/projecrt/:id/schedule?token=${token}
+		GET    http://localhost:2017/projecrt/:id/schedule?token=${token} -->
 ```
-## 开发者
+## 用户
+### 更改个人信息
+```js
+		PATCH    http://localhost:2017/user?token=${token}
+```
+```js
+{
+	nickName: ${nickName},        //昵称(String)
+	signature: ${signature},        //签名(String)
+	introduction: ${introduction}        //简介(String)
+}
+```
+返回=>  用户信息 (客户，开发者接口都一样)
+
+<!-- ## 开发者
 ### 查看开发者列表
 ```js
 		GET    http://localhost:2017/projecrt/:id/developer?token=${token}
@@ -407,4 +421,4 @@ barid为上一步添加任务栏返回的Id
 ### 更改开发者状态(开发者)
 ```js
 		PATCH    http://localhost:2017/developer/:id/status?token=${token}&userid=${openid}
-```
+``` -->
