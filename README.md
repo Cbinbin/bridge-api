@@ -87,7 +87,7 @@ A small bridge.
 	title: ${title},        //项目名称(String)
 	version: ${version},        //项目版本(String)
 	picture: ${picture},        //项目图片(String)
-	cycle: ${cycle},        //项目周期(Number)
+	// cycle: ${cycle},        //项目周期(Number)
 	startDate: ${startDate},        //项目开始时间(Date)
 	endDate: ${endDate},        //项目结束时间(Date)
 	progression: ${progression}        //项目进度(String)
@@ -116,7 +116,7 @@ key: picture
 {
 	title: "xxx",
 	version: "xxx",
-	cycle: "xxx",
+	// cycle: "xxx",        //自动计算
 	startDate: "xxx",
 	endDate: "xxx",
 	progression: "xxx"
