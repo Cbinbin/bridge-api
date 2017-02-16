@@ -78,7 +78,7 @@ router.post('/', (req, res)=> {
 		title: req.body.title || '空',
 		version: req.body.version || '空',
 		picture: req.body.picture || 'nothing',
-		cycle: req.body.cycle || 0,
+		cycle: req.body.cycle,
 		startDate: req.body.startDate || datenow,
 		endDate: req.body.endDate || datenow,
 		progression: req.body.progression || 'pending',
@@ -90,7 +90,15 @@ router.post('/', (req, res)=> {
 	})
 	project.save((err)=> {
 		if(err) return res.send(err)
-		res.send(project)
+		var timeLength = project.endDate - project.startDate
+			, cycleDay = timeLength/(1000*60*60*24)
+		Project.findOneAndUpdate({_id: project._id}, 
+		{$set: {cycle: cycleDay}}, 
+		{new: true},
+		(err, newproject)=> {
+			if(err) return res.send(newproject)
+			res.send(newproject)
+		})
 	})
 })
 //改项目图
@@ -120,13 +128,21 @@ router.patch('/:id/change', (req, res)=> {
 		if(!project) return res.send({error: 'Not found the project '})
 		if(req.body.title) project.title = req.body.title
 		if(req.body.version) project.version = req.body.version
-		if(req.body.cycle) project.cycle = req.body.cycle
+		// if(req.body.cycle) project.cycle = req.body.cycle
 		if(req.body.startDate) project.startDate = req.body.startDate
 		if(req.body.endDate) project.endDate = req.body.endDate
 		if(req.body.progression) project.progression = req.body.progression
 		project.save((err)=> {
 			if(err) return res.send(err)
-			res.send(project)
+			var timeLength = project.endDate - project.startDate
+				, cycleDay = timeLength/(1000*60*60*24)
+			Project.findOneAndUpdate({_id: project._id}, 
+			{$set: {cycle: cycleDay}}, 
+			{new: true},
+			(err, newproject)=> {
+				if(err) return res.send(newproject)
+				res.send(newproject)
+			})
 		})
 	})
 })
