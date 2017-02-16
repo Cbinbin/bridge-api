@@ -285,7 +285,7 @@ barid为上一步添加任务栏返回的Id
 ## 项目
 ### 查看项目列表
 ```js
-		GET    http://localhost:2017/projecrt
+		GET    http://localhost:2017/project?token=${token}
 ```
 返回=>
 ```js
@@ -310,7 +310,7 @@ barid为上一步添加任务栏返回的Id
 
 ### 查看项目详情
 ```js
-		GET    http://localhost:2017/projecrt/:id
+		GET    http://localhost:2017/projecrt/:id?token=${token}
 ```
 返回=>
 ```js
@@ -377,34 +377,34 @@ barid为上一步添加任务栏返回的Id
 
 ### 查看设计图
 ```js
-		GET    http://localhost:2017/projecrt/:id/design
+		GET    http://localhost:2017/projecrt/:id/design?token=${token}
 ```
 ### 查看开发文档
 ```js
-		GET    http://localhost:2017/projecrt/:id/document
+		GET    http://localhost:2017/projecrt/:id/document?token=${token}
 ```
 ### 查看阶段详情
 ```js
-		GET    http://localhost:2017/projecrt/:id/schedule
+		GET    http://localhost:2017/projecrt/:id/schedule?token=${token}
 ```
 ## 开发者
 ### 查看开发者列表
 ```js
-		GET    http://localhost:2017/projecrt/:id/developer
+		GET    http://localhost:2017/projecrt/:id/developer?token=${token}
 ```
 ### 查看开发者信息(客户)
 ```js
-		GET    http://localhost:2017/developer/:id?userid=${openid}
+		GET    http://localhost:2017/developer/:id?token=${token}&userid=${openid}
 ```
 ### 查看开发者信息(开发者)
 ```js
-		GET    http://localhost:2017/developer/:id?userid=${openid}
+		GET    http://localhost:2017/developer/:id?token=${token}&userid=${openid}
 ```
 ### 更改开发者信息(开发者)
 ```js
-		PATCH    http://localhost:2017/developer/:id?userid=${openid}
+		PATCH    http://localhost:2017/developer/:id?token=${token}&userid=${openid}
 ```
 ### 更改开发者状态(开发者)
 ```js
-		PATCH    http://localhost:2017/developer/:id/status?userid=${openid}
+		PATCH    http://localhost:2017/developer/:id/status?token=${token}&userid=${openid}
 ```
