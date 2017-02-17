@@ -385,8 +385,9 @@ barid为上一步添加任务栏返回的Id
 ```
 ### 查看阶段详情
 ```js
-		GET    http://localhost:2017/projecrt/:id/schedule?token=${token} -->
-```
+		GET    http://localhost:2017/projecrt/:id/schedule?token=${token}
+``` -->
+
 ## 用户
 ### 更改个人信息
 ```js
