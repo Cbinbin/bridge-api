@@ -35,15 +35,32 @@ A small bridge.
 ```
     
 
-<!-- ## 用户
+## 用户
 ### 查看信息
 ```js
 		GET    http://localhost:2017/admin/user?token=${token}
 ```
-### 更改信息
+返回=>    
+```js
+{
+	"_id": "xxx",
+	"wxInfo": {
+		"openId": "xxx",
+		"nickName": "xxx",        //昵称(String)
+		"gender": 1,
+		"language": "zh_CN",
+		"city": "Chaozhou",
+		"province": "Guangdong",
+		"country": "CN",
+		"avatarUrl": "xxx"        //头像(String)
+	},
+	"mold": "user"        //用户类型(String)
+}
+```
+<!-- ### 更改信息
 ```js
 		PATCH    http://localhost:2017/admin/user/:id?token=${token}
-```
+``` -->
 ### 变更用户类型
 ```js
 		PATCH    http://localhost:2017/admin/user/:id/mold?token=${token}
@@ -53,30 +70,75 @@ A small bridge.
 	mold: ${mold}        //用户类型['user', 'customer', 'developer']
 }
 ```
+返回=>  用户改前的信息（用户类型会更改）    
+
 ### 删除信息
 ```js
 		DELETE    http://localhost:2017/admin/user/:id?token=${token}
 ```
 
-### 客户
+## 客户
 ### 查看信息
 ```js
 		GET    http://localhost:2017/admin/customer?token=${token}
 ```
-### 更改信息
+返回=>    
+```js
+{
+	"_id": "xxx",
+	"updatedTime": "2017-02-17T00:00:00.000Z",        //更改时间(Date)
+	"wxInfo": {...},
+	"mold": "customer",        //用户类型(String)
+	"realname": "xxx",        //真实姓名(String)
+	"telephone": 0,        //手机号(Number)
+	"company": "xxx",        //公司(String)
+	"companyLogo": "xxx",        //公司图标(String)
+	"companyAddress": "xxx",        //公司地址(String)
+	"fax": "xxx",        //传真(String)
+	"seniority": 0,        //服务年限(Number)
+	"serviceDate": "xxx",        //服务起止日期(String)
+	"remark": "xxx",        //备注(String)
+	"createdTime": "2017-02-17T00:00:00.000Z",        //用户创建时间(Date)
+	"finishProjects": ["ObjectId", "ObjectId"],        //完成项目(String)
+	"onGoing": ["ObjectId", "ObjectId"]        //正在的项目(String)
+}
+```
+<!-- ### 更改信息
 ```js
 		PATCH    http://localhost:2017/admin/customer/:id?token=${token}
-```
+``` -->
 
 ## 开发者
 ### 查看信息
 ```js
 		GET    http://localhost:2017/admin/developer?token=${token}
 ```
-### 更改信息
+返回=>    
+```js
+{
+	"_id": "xxx",
+	"updatedTime": "2017-02-17T00:00:00.000Z",        //更改时间(Date)
+	"wxInfo": {...},
+	"mold": "developer",        //用户类型(String)
+	"introduction": "xxx",        //简介(String)
+	"signature": "xxx",        //签名(String)
+	"position": "xxx",        //职位(String)
+	"QQ": 0,        //QQ(Number)
+	"status": "off",        //上线状态(String)
+	"projectTime": 0,        //项目耗时(Number)
+	"totalTime": 0,        //总耗时(Number)
+	"doing": "ObjectId",        //正在的项目(Object)
+	"telephone": 0,        //手机号(Number)
+	"createdTime": "2017-02-17T00:00:00.000Z",        //用户创建时间(Date)
+	"participations": ["ObjectId", "ObjectId"]        //参与项目(Object)
+}
+```
+<!-- ### 更改信息
 ```js
 		PATCH    http://localhost:2017/admin/developer/:id?token=${token}
 ``` -->
+
+
 
 
 ## 项目
@@ -129,14 +191,15 @@ key: picture
 ```js
 		POST    http://localhost:2017/admin/project/:id/design?token=${token}
 ```
+key: design    
 // 保存后，filename存的是上传时的文件名    
-返回=>  
-```js
-{
+返回=>  'ok'
+
+<!-- {
 	filename: "xxx",        //图片名(String)
 	designUrl: "xxx"        //图片路径(String)
-}
-```
+} -->
+
 * 4. 删除设计图
 ```js
 		DELETE    http://localhost:2017/admin/project/:id/design/:designId?token=${token}
@@ -294,17 +357,14 @@ barid为上一步添加任务栏返回的Id
 	"title": "xxx",        //项目名称
 	"version": "xxx",        //项目版本
 	"picture": "xxx",        //项目图片
-	"cycle": 0,        //项目周期
-	"startDate": "xxx",        //项目开始时间
-	"endDate": "xxx",        //项目结束时间
 	"progression": "xxx",        //项目进度
 	"possessor": "xxx",        //客户
-	"schedule": "xxx",        //进度表
 	"developers": {        //开发者
 		"backEnd": [],        //后端
 		"backstage": [],        //后台管理
 		"frontEnd": []        //前端
-	}
+	},
+	"createdAt": "xxx"        //创建时间
 }
 ```
 
