@@ -493,6 +493,7 @@ router.get('/:id', (req, res)=> {
 	})
 	.populate('designs', 'filename designUrl')
 	.populate('document', 'writer')
+	.populate('possessor')
 	.exec((err, project)=> {
 		if(err) return res.send(err)
 		if(!project) return res.json({error: 'Not found the project'})
@@ -504,6 +505,51 @@ router.get('/:id', (req, res)=> {
 			project.schedule.finish.time = dateChange(project.schedule.finish.time)
 		}
 		res.send(project)
+	})
+})
+//----------------------------------------------------------------------------------------------------------------------------------
+
+//添加客户进项目
+router.patch('/:id/possessor', (req, res)=> {
+	const projectId = req.params.id
+		, possessorId = req.query.customer
+	Project.findOneAndUpdate({_id: projectId}, 
+	{$set: {possessor: possessorId}}, 
+	{new: true}, 
+	(err, project)=> {
+		if(err) return res.send(err)
+		res.send(project)
+	})
+})
+//添加开发者进项目
+router.patch('/:id/:part', (req, res)=> {
+	const projectId = req.params.id
+		, part = req.params.part
+		, developerId = req.query.developer
+	Project.findOne({_id: projectId})
+	.where(`developers.${part}`).in([developerId])
+	.exec((err, same)=> {
+		if(err) return res.send(err)
+		var backEndId = null
+			, backstageId = null
+			, frontEndId = null
+		if(part == 'backEnd') backEndId = developerId
+		else if(part == 'backstage') backstageId = developerId
+		else if(part == 'frontEnd') frontEndId = developerId
+		else return res.send({error: 'Not found the part'})
+		if(!same) {
+			Project.findOneAndUpdate({_id: projectId}, 
+			{$push: {developers: {
+				backEnd: backEndId,
+				backstage: backstageId,
+				frontEnd: frontEndId
+			}}}, 
+			{new: true}, 
+			(err, project)=> {
+				if(err) return res.send(err)
+				res.send(project)
+			})
+		} else res.send('haha')
 	})
 })
 
