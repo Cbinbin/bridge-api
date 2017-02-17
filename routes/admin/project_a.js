@@ -11,6 +11,7 @@ const router = require('express').Router()
 	, Content = require('../../models/Content')
 	, host = require('../../utils/hosturl')
 	, upload = require('../../utils/upload')
+	, uploads = require('../../utils/uploads')
 	, delFile = require('../../utils/delFile')
 	, datenow = new Date()
 
@@ -175,24 +176,28 @@ router.delete('/:id', (req, res)=> {
 //------------------------------------------------------------------------------------------------------------------
 
 //添加设计图
-router.post('/:id/design', (req, res)=> {
+router.post('/:id/design', (req, res, next)=> {
 	const projectId = req.params.id
-	const designUpload = upload('designs', 'design')
+		, designArray = []
+	const designUpload = uploads('designs', 'design')
 	designUpload(req, res, (err)=> {
 		if(err) return res.send('something wrong')
-		const design = new Design({
-			filename: req.file.originalname,
-			designUrl: host.bridge + req.file.path
-		})
-		design.save((err)=> {
-			if(err) return res.send(err)
-			Project.update({_id: projectId}, 
-			{$push: {designs: design._id}}, 
-			(err, result)=> {
-				if(err) return console.log(err)
+		req.files.map((item)=> {
+			const design = new Design({
+				filename: item.originalname,
+				designUrl: host.bridge + item.path
 			})
-			res.send(design)
+			design.save((err)=> {
+				if(err) return res.send(err)
+				Project.update({_id: projectId}, 
+				{$push: {designs: design._id}}, 
+				(err, result)=> {
+					if(err) return console.log(err)
+					designArray.push(design)
+				})
+			})
 		})
+		res.send('ok')
 	})
 })
 //删除设计图
