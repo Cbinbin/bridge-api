@@ -335,7 +335,7 @@ router.post('/:id/schedule/:part', (req, res)=> {
 	Schedule.findOne({projectId: projectId})
 	.exec((err, schedule)=> {
 		if(err) return res.send(err)
-		if(!schedule) return res.send('Not found projectId')
+		if(!schedule) return res.send('Not found the schedule')
 		barId = findTaskbarId(part, schedule)
 		Taskbar.findOne({_id: barId})
 		.exec((err, same)=> {
@@ -493,7 +493,7 @@ router.get('/:id', (req, res)=> {
 	})
 	.populate('designs', 'filename designUrl')
 	.populate('document', 'writer')
-	.populate('possessor')
+	.populate('possessor', 'company wxInfo')
 	.exec((err, project)=> {
 		if(err) return res.send(err)
 		if(!project) return res.json({error: 'Not found the project'})
