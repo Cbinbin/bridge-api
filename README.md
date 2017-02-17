@@ -103,10 +103,24 @@ A small bridge.
 	"onGoing": ["ObjectId", "ObjectId"]        //正在的项目(String)
 }
 ```
-<!-- ### 更改信息
+### 更改信息
 ```js
 		PATCH    http://localhost:2017/admin/customer/:id?token=${token}
-``` -->
+```
+```js
+{
+	nickName: ${nickName},
+	telephone: ${telephone},
+	realname: ${realname},
+	company: ${company},
+	companyAddress: ${companyAddress},
+	fax: ${fax},
+	seniority: ${seniority},
+	serviceDate: ${serviceDate},
+	remark: ${remark}
+}
+```
+返回=>  客户信息    
 
 ## 开发者
 ### 查看信息
@@ -133,10 +147,20 @@ A small bridge.
 	"participations": ["ObjectId", "ObjectId"]        //参与项目(Object)
 }
 ```
-<!-- ### 更改信息
+### 更改信息
 ```js
 		PATCH    http://localhost:2017/admin/developer/:id?token=${token}
-``` -->
+```
+```js
+{
+	nickName: ${nickName},
+	position: ${position},
+	signature: ${signature},
+	introduction: ${introduction},
+	QQ: ${QQ},
+	telephone: ${telephone}
+```
+返回=>  开发者信息    
 
 
 
