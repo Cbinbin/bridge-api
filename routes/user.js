@@ -14,31 +14,24 @@ router.patch('/', (req, res)=> {
 		if(!user.introduction) user.introduction = 'undefinded'
 		if(req.body.signature || req.body.introduction) {
 			User.findOneAndUpdate({_id: user._id}, 
-			{$set: {signature: req.body.signature || user.signature, 
+			{$set: {
+					wxInfo: {nickName: req.body.nickName || user.wxInfo.nickName,
+					openId: user.wxInfo.openId,
+					gender: user.wxInfo.gender,
+					language: user.wxInfo.language,
+					city: user.wxInfo.city,
+					province: user.wxInfo.province,
+					country: user.wxInfo.country,
+					avatarUrl: user.wxInfo.avatarUrl
+				},
+				signature: req.body.signature || user.signature, 
 				introduction: req.body.introduction || user.introduction}}, 
 			{new: true, upsert: true}, 
 			(err, newuser)=> {
 				if(err) return res.send(err)
-				if(req.body.nickName) newuser.wxInfo.nickName = req.body.nickName
-				newuser.save((err)=> {
-					if(err) return res.send(err)
-					res.send(newuser)
-				})
+				res.send(newuser)
 			})
 		}
-	})
-})
-
-router.get('/', (req, res)=> {
-	const per = Number(req.query.per) || 10
-		, page = Number(req.query.page) || 1
-	User.find({mold: 'developer'}, {wxInfo:1, mold:1, introduction:1, signature:1, position:1, QQ:1, status:1, projectTime:1, totalTime:1, doing:1, participations:1, telephone: 1, createdTime:1, updatedTime:1})
-	.sort({createdTime: -1})
-	.limit(per)
-	.skip((page - 1) * per)
-	.exec((err, users)=> {
-		if(err) return res.send(err)
-		res.send(users)
 	})
 })
 
