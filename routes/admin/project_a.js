@@ -76,8 +76,8 @@ function removeDesign(id) {
 //创建项目
 router.post('/', (req, res)=> {
 	const project = new Project({
-		title: req.body.title || '空',
-		version: req.body.version || '空',
+		title: req.body.title || '0元设计官网',
+		version: req.body.version || '0.1.0',
 		picture: req.body.picture || 'nothing',
 		cycle: req.body.cycle,
 		startDate: req.body.startDate || datenow,
@@ -345,7 +345,7 @@ router.post('/:id/schedule/:part', (req, res)=> {
 			})
 			const task = new Task({
 				projectId: projectId,
-				txt: req.body.txt || '暂无',
+				txt: req.body.txt || '项目构架搭建',
 				completion: req.body.completion || false
 			})
 			task.save((err)=> {
@@ -369,7 +369,7 @@ router.post('/schedule/:barid/task', (req, res)=> {
 		if(!taskbar) return res.send('Not found taskbar')
 		const task = new Task({
 			projectId: taskbar.projectId,
-			txt: req.body.txt || '暂无',
+			txt: req.body.txt || '项目构架搭建',
 			completion: req.body.completion || false
 		})
 		task.save((err)=> {
@@ -432,7 +432,7 @@ router.post('/:id/start', (req, res)=> {
 		if(!schedule) return res.send({error: 'Not found the schedule '})
 		const content = new Content({
 			projectId: projectId,
-			content: req.body.content
+			content: req.body.content || '项目负责任将与您探讨项目事项。'
 		})
 		content.save((err)=> {
 			if(err) return res.send(err)
