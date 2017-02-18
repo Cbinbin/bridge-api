@@ -30,7 +30,7 @@ router.patch('/status', (req, res)=> {
 	.exec((err, user)=> {
 		if(err) return res.send(err)
 		if(!user) return res.send(user)
-		if(user.mold != 'developer') return res.send('You are not the developer')
+		if(user.mold == 'user' || 'customer') return res.send('You are not the developer')
 		if(user.status == 'off') user.status == 'on'
 		else if(user.status == 'on') user.status == 'off'
 		user.save((err)=> {

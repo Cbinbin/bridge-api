@@ -16,6 +16,7 @@ const projectSchema = new Schema({
 		type: String, 
 		enum:['pending', 'start', 'going', 'check', 'finish'] 
 	},
+	participants: { type: Number },
 	designs: [{ 
 		type: Schema.Types.ObjectId, 
 		ref: 'Design'

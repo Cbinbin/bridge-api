@@ -83,6 +83,7 @@ router.post('/', (req, res)=> {
 		startDate: req.body.startDate || datenow,
 		endDate: req.body.endDate || datenow,
 		progression: req.body.progression || 'pending',
+		participants: 0,
 		designs: req.body.designs || [],
 		document: req.body.document || defaultId,
 		possessor: req.body.possessor || defaultId,
@@ -544,6 +545,12 @@ router.patch('/:id/:part', (req, res)=> {
 				if(backEndId) project.developers.backEnd.pull(backEndId)
 				if(backstageId) project.developers.backstage.pull(backstageId)
 				if(frontEndId) project.developers.frontEnd.pull(frontEndId)
+				project.update({_id: projectId}, 
+				{$inc: {participants: -1}}, 
+				{upsert: true}, 
+				(err,result)=> {
+					if(err) return res.send(err)
+				})
 				project.save((err)=> {
 					if(err) return res.send(err)
 					res.send(project)
@@ -556,6 +563,12 @@ router.patch('/:id/:part', (req, res)=> {
 				if(backEndId) project.developers.backEnd.push(backEndId)
 				if(backstageId) project.developers.backstage.push(backstageId)
 				if(frontEndId) project.developers.frontEnd.push(frontEndId)
+				project.update({_id: projectId}, 
+				{$inc: {participants: 1}}, 
+				{upsert: true}, 
+				(err,result)=> {
+					if(err) return res.send(err)
+				})
 				project.save((err)=> {
 					if(err) return res.send(err)
 					res.send(project)
