@@ -486,7 +486,7 @@ part: frontEnd || backstage || backEnd
 ## 用户
 ### 查看开发者信息
 ```js
-		GET    http://localhost:2017/user?token=${token}
+		GET    http://localhost:2017/developer?token=${token}
 ```
 ### 更改个人信息
 ```js
@@ -499,26 +499,10 @@ part: frontEnd || backstage || backEnd
 	introduction: ${introduction}        //简介(String)
 }
 ```
-返回=>  用户信息 (客户，开发者接口都一样)
+返回=>  用户信息 (客户，开发者接口都一样)    
 
-<!-- ## 开发者
-### 查看开发者列表
-```js
-		GET    http://localhost:2017/projecrt/:id/developer?token=${token}
-```
-### 查看开发者信息(客户)
-```js
-		GET    http://localhost:2017/developer/:id?token=${token}&userid=${openid}
-```
-### 查看开发者信息(开发者)
-```js
-		GET    http://localhost:2017/developer/:id?token=${token}&userid=${openid}
-```
-### 更改开发者信息(开发者)
-```js
-		PATCH    http://localhost:2017/developer/:id?token=${token}&userid=${openid}
-```
 ### 更改开发者状态(开发者)
 ```js
-		PATCH    http://localhost:2017/developer/:id/status?token=${token}&userid=${openid}
-``` -->
+		PATCH    http://localhost:2017/developer/status?token=${token}
+```
+// 不是开发者则无法更改
