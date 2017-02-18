@@ -178,26 +178,23 @@ router.delete('/:id', (req, res)=> {
 //添加设计图
 router.post('/:id/design', (req, res, next)=> {
 	const projectId = req.params.id
-		, designArray = []
-	const designUpload = uploads('designs', 'design')
+		// , designArray = []
+	const designUpload = upload('designs', 'design')
 	designUpload(req, res, (err)=> {
 		if(err) return res.send('something wrong')
-		req.files.map((item)=> {
-			const design = new Design({
-				filename: item.originalname,
-				designUrl: host.bridge + item.path
-			})
-			design.save((err)=> {
-				if(err) return res.send(err)
-				Project.update({_id: projectId}, 
-				{$push: {designs: design._id}}, 
-				(err, result)=> {
-					if(err) return console.log(err)
-					designArray.push(design)
-				})
+		const design = new Design({
+			filename: req.file.originalname,
+			designUrl: host.bridge + req.file.path
+		})
+		design.save((err)=> {
+			if(err) return res.send(err)
+			Project.update({_id: projectId}, 
+			{$push: {designs: design._id}}, 
+			(err, result)=> {
+				if(err) return console.log(err)
+				res.send(design)
 			})
 		})
-		res.send('ok')
 	})
 })
 //删除设计图
