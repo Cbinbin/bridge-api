@@ -341,6 +341,17 @@ barid为上一步添加任务栏返回的Id
 ```
 返回=>  "message": "the content delete success"    
 
+### 添加客户进项目
+```js
+		PATCH    http://localhost:2017/admin/project/:id/possessor?customer=${customer}&token=${token}
+```
+### 添加开发者进项目
+```js
+		PATCH    http://localhost:2017/admin/project/:id/:part?developer=${developer}&token=${token}    
+part: frontEnd || backstage || backEnd 
+```
+// 发送第二次则删除该开发者
+
 ### 查看项目列表
 ```js
 		GET    http://localhost:2017/admin/project?token=${token}
@@ -473,6 +484,10 @@ barid为上一步添加任务栏返回的Id
 ``` -->
 
 ## 用户
+### 查看开发者信息
+```js
+		GET    http://localhost:2017/user?token=${token}
+```
 ### 更改个人信息
 ```js
 		PATCH    http://localhost:2017/user?token=${token}
