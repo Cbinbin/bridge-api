@@ -394,6 +394,7 @@ part: frontEnd || backstage || backEnd
 	"picture": "xxx",        //项目图片
 	"progression": "xxx",        //项目进度
 	"possessor": "xxx",        //客户
+	"participants": 0,        //参与人员数
 	"developers": {        //开发者
 		"backEnd": [],        //后端
 		"backstage": [],        //后台管理
