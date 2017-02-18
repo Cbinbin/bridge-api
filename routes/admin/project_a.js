@@ -494,6 +494,9 @@ router.get('/:id', (req, res)=> {
 	.populate('designs', 'filename designUrl')
 	.populate('document', 'writer')
 	.populate('possessor', 'company wxInfo')
+	.populate('developers.backEnd', 'wxInfo mold position QQ telephone signature introduction status projectTime totalTime doing participations')
+	.populate('developers.backstage', 'wxInfo mold position QQ telephone signature introduction status projectTime totalTime doing participations')
+	.populate('developers.frontEnd', 'wxInfo mold position QQ telephone signature introduction status projectTime totalTime doing participations')
 	.exec((err, project)=> {
 		if(err) return res.send(err)
 		if(!project) return res.json({error: 'Not found the project'})
@@ -537,19 +540,31 @@ router.patch('/:id/:part', (req, res)=> {
 		else if(part == 'backstage') backstageId = developerId
 		else if(part == 'frontEnd') frontEndId = developerId
 		else return res.send({error: 'Not found the part'})
-		if(!same) {
-			Project.findOneAndUpdate({_id: projectId}, 
-			{$push: {developers: {
-				backEnd: backEndId,
-				backstage: backstageId,
-				frontEnd: frontEndId
-			}}}, 
-			{new: true}, 
-			(err, project)=> {
+		if(same) {
+			Project.findOne({_id: projectId})
+			.exec((err, project)=> {
 				if(err) return res.send(err)
-				res.send(project)
+				if(backEndId) project.developers.backEnd.pull(backEndId)
+				if(backstageId) project.developers.backstage.pull(backstageId)
+				if(frontEndId) project.developers.frontEnd.pull(frontEndId)
+				project.save((err)=> {
+					if(err) return res.send(err)
+					res.send(project)
+				})
 			})
-		} else res.send('haha')
+		} else {
+			Project.findOne({_id: projectId})
+			.exec((err, project)=> {
+				if(err) return res.send(err)
+				if(backEndId) project.developers.backEnd.push(backEndId)
+				if(backstageId) project.developers.backstage.push(backstageId)
+				if(frontEndId) project.developers.frontEnd.push(frontEndId)
+				project.save((err)=> {
+					if(err) return res.send(err)
+					res.send(project)
+				})
+			})
+		}
 	})
 })
 
