@@ -35,4 +35,14 @@ router.patch('/', (req, res)=> {
 	})
 })
 
+router.get('/', (req, res)=> {
+	const openId = req.decoded.openId
+	User.findOne({openid: openId}, {wxInfo:1, mold:1, introduction:1, signature:1, telephone: 1, createdTime:1, updatedTime:1})
+	.exec((err, user)=> {
+		if(err) return res.send(err)
+		if(!user) return res.send(user) 
+		res.send(user)
+	})
+})
+
 module.exports = router

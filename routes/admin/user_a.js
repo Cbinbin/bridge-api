@@ -21,8 +21,9 @@ router.patch('/:id/mold', (req, res)=> {
 	.exec((err, user)=> {
 		if(err) return res.send(err)
 		if(req.body.mold == 'developer') {
-			User.update({_id: userId}, 
+			User.findOneAndUpdate({_id: userId}, 
 			{$set: {
+				mold: req.body.mold,
 				position: user.position || '',
 				QQ: user.QQ || 0,
 				telephone: user.telephone || 0,
@@ -34,13 +35,15 @@ router.patch('/:id/mold', (req, res)=> {
 				doing: user.doing || null,
 				participations: user.participations || [ ]
 			}}, 
-			{upsert: true}, 
-			(err, result)=> {
-				if(err) return console.log(err)
+			{new: true, upsert: true}, 
+			(err, newuser)=> {
+				if(err) return res.send(err)
+				res.send(newuser)
 			})
 		} else if(req.body.mold == 'customer') {
-			User.update({_id: userId}, 
+			User.findOneAndUpdate({_id: userId}, 
 			{$set: {
+				mold: req.body.mold,
 				realname: user.realname || '',
 				telephone: user.telephone || 0,
 				company: user.company || '',
@@ -53,16 +56,12 @@ router.patch('/:id/mold', (req, res)=> {
 				finishProjects: user.finishProjects || [ ],
 				remark: user.remark || ''
 			}}, 
-			{upsert: true}, 
-			(err, result)=> {
-				if(err) return console.log(err)
+			{new: true, upsert: true}, 
+			(err, newuser)=> {
+				if(err) return res.send(err)
+				res.send(newuser)
 			})
 		}
-		user.mold = req.body.mold
-		user.save((err, userd)=> {
-			if(err) return res.send(err)
-			res.send(userd)
-		})
 	})
 })
 //删除用户
