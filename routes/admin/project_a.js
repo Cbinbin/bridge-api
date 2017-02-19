@@ -545,7 +545,7 @@ router.patch('/:id/:part', (req, res)=> {
 				if(backEndId) project.developers.backEnd.pull(backEndId)
 				if(backstageId) project.developers.backstage.pull(backstageId)
 				if(frontEndId) project.developers.frontEnd.pull(frontEndId)
-				if(project.participants) project.participants = project.participants - 1
+				if(project.participants >= 0) project.participants = project.participants - 1
 				project.save((err)=> {
 					if(err) return res.send(err)
 					res.send(project)
@@ -558,7 +558,7 @@ router.patch('/:id/:part', (req, res)=> {
 				if(backEndId) project.developers.backEnd.push(backEndId)
 				if(backstageId) project.developers.backstage.push(backstageId)
 				if(frontEndId) project.developers.frontEnd.push(frontEndId)
-				if(project.participants) project.participants = project.participants + 1
+				if(project.participants >= 0) project.participants = project.participants + 1
 				project.save((err)=> {
 					if(err) return res.send(err)
 					res.send(project)
