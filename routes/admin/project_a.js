@@ -305,7 +305,7 @@ router.post('/:id/schedule', (req, res)=> {
 				res.send(schedule)
 			})
 		} else {
-			res.send('该项目已添加过进度')
+			res.send({message: '该项目已添加过进度'})
 		}
 	})
 })
@@ -334,7 +334,7 @@ router.post('/:id/schedule/:part', (req, res)=> {
 	Schedule.findOne({projectId: projectId})
 	.exec((err, schedule)=> {
 		if(err) return res.send(err)
-		if(!schedule) return res.send('Not found the schedule')
+		if(!schedule) return res.send({error: 'Not found the schedule'})
 		barId = findTaskbarId(part, schedule)
 		Taskbar.findOne({_id: barId})
 		.exec((err, same)=> {
@@ -368,7 +368,7 @@ router.post('/schedule/:barid/task', (req, res)=> {
 	Taskbar.findOne({_id: barId})
 	.exec((err, taskbar)=> {
 		if(err) return res.send(err)
-		if(!taskbar) return res.send('Not found taskbar')
+		if(!taskbar) return res.send({error: 'Not found taskbar'})
 		const task = new Task({
 			projectId: taskbar.projectId,
 			txt: req.body.txt || '项目构架搭建',
@@ -392,7 +392,7 @@ router.patch('/schedule/task/:taskId', (req, res)=> {
 	Task.findOne({_id: taskId})
 	.exec((err, task)=> {
 		if(err) return res.send(err)
-		if(!task) return res.send('Not found task')
+		if(!task) return res.send({error: 'Not found task'})
 		Task.findOneAndUpdate({_id: taskId}, 
 		{$set: {txt: req.body.txt || task.txt, completion: req.body.completion || task.completion}}, 
 		{new: true}, 
@@ -409,7 +409,7 @@ router.delete('/schedule/task/:taskId', (req, res)=> {
 	.where('column').in([taskId])
 	.exec((err, taskbar)=> {
 		if(err) return res.send(err)
-		if(!taskbar) return res.send('Not found taskbar')
+		if(!taskbar) return res.send({error: 'Not found taskbar'})
 		Taskbar.findOneAndUpdate({_id: taskbar._id}, 
 		{$pull: {column: taskId}}, 
 		{new: true}, 
@@ -453,7 +453,7 @@ router.delete('/schedule/content/:contentId', (req, res)=> {
 	.where('start.contents').in([contentId])
 	.exec((err, schedule)=> {
 		if(err) return res.send(err)
-		if(!schedule) return res.send('Not found schedule')
+		if(!schedule) return res.send({error: 'Not found the schedule '})
 		schedule.start.contents.pull(contentId)
 		schedule.save((err)=> {
 			if(err) return res.send(err)

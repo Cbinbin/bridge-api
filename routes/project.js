@@ -57,7 +57,7 @@ router.get('/:id', (req, res)=> {
 //
 router.get('/:id/design', (req, res)=> {
 	const projectId = req.params.id
-	Design.find({projectId: projectId})
+	Design.find({projectId: projectId}, {projectId:0, __v:0})
 	.exec((err, designs)=> {
 		if(err) return res.send(err)
 		res.send(designs)
