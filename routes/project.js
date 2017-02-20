@@ -51,7 +51,11 @@ router.get('/:id', (req, res)=> {
 			project.schedule.check.time = dateChange(project.schedule.check.time)
 			project.schedule.finish.time = dateChange(project.schedule.finish.time)
 		}
-		res.send(project)
+		var startdate = moment(project.startDate).format('YYYY年MM月DD日')
+			, enddate = moment(project.endDate).format('YYYY年MM月DD日')
+			, period = `${startdate} ~ ${enddate}`
+		console.log(period)
+		res.send({project, period: period})
 	})
 })
 //
