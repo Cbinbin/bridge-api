@@ -236,6 +236,21 @@ router.post('/:id/doc', (req, res)=> {
 		res.send(doc)
 	})
 })
+//更改开发文档
+router.patch('/:id/doc/:docId', (req, res)=> {
+	const projectId = req.params.id
+		, docId = req.params.docId
+	Document.remove({_id: docId})
+	.exec((err)=> {
+		if(err) return res.send(err)
+		Project.update({_id: projectId}, 
+		{$set: {document: defaultId}},
+		(err, result)=> {
+			if(err) return console.log(err)
+		})
+		res.json({message: 'the doc delete success'})
+	})
+})
 //删除开发文档
 router.delete('/:id/doc/:docId', (req, res)=> {
 	const projectId = req.params.id
@@ -339,7 +354,7 @@ router.post('/:id/schedule/:part', (req, res)=> {
 		Taskbar.findOne({_id: barId})
 		.exec((err, same)=> {
 			if(err) return res.send(err)
-			if(same) return res.send(`${part} taskbar already exists`)
+			if(same) return res.send({message: `${part} taskbar already exists`})
 			const taskbar = new Taskbar({
 				projectId: projectId,
 				part: part,
