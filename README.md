@@ -472,7 +472,7 @@ part: frontEnd || backstage || backEnd
 }
 ```
 
-<!-- ### 查看设计图
+### 查看设计图
 ```js
 		GET    http://localhost:2017/projecrt/:id/design?token=${token}
 ```
@@ -480,7 +480,7 @@ part: frontEnd || backstage || backEnd
 ```js
 		GET    http://localhost:2017/projecrt/:id/document?token=${token}
 ```
-### 查看阶段详情
+<!-- ### 查看阶段详情
 ```js
 		GET    http://localhost:2017/projecrt/:id/schedule?token=${token}
 ``` -->

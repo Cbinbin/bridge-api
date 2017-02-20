@@ -184,6 +184,7 @@ router.post('/:id/design', (req, res, next)=> {
 	designUpload(req, res, (err)=> {
 		if(err) return res.send('something wrong')
 		const design = new Design({
+			projectId: projectId,
 			filename: req.file.originalname,
 			designUrl: host.bridge + req.file.path
 		})

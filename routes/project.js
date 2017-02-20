@@ -1,6 +1,8 @@
 const router = require('express').Router()
 	, moment = require('moment')
 	, Project = require('../models/Project')
+	, Design = require('../models/Design')
+	, Document = require('../models/Document')
 	, checkToken = require('../utils/checkToken')
 
 function dateChange(time) {
@@ -55,9 +57,27 @@ router.get('/:id', (req, res)=> {
 //
 router.get('/:id/design', (req, res)=> {
 	const projectId = req.params.id
-
+	Design.find({_id: projectId})
+	.exec((err, designs)=> {
+		if(err) return res.send(err)
+		res.send(designs)
+	})
 })
 //
+router.get('/:id/document', (req, res)=> {
+	const projectId = req.params.id
+	Project.findOne({_id: projectId})
+	.exec((err, project)=> {
+		if(err) return res.send(err)
+		if(!project) return res.send({error: 'Not found the project'})
+		Document.findOne({_id: project.document})
+		.exec((err, doc)=> {
+			if(err) return res.send(err)
+			if(!doc) return res.send({error: 'Not found the document'})
+			res.send(doc)
+		})
+	})
+})
 
 
 module.exports = router
