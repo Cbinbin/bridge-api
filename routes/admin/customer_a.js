@@ -1,5 +1,7 @@
 const router = require('express').Router()
 	, User = require('../../models/User')
+	, upload = require('../../utils/upload')
+	, host = require('../../utils/hosturl')
 
 router.get('/', (req, res)=> {
 	const per = Number(req.query.per) || 10
@@ -44,6 +46,36 @@ router.patch('/:id', (req, res)=> {
 		(err, newuser)=> {
 			if(err) return res.send(err)
 			res.send(newuser)
+		})
+	})
+})
+//头像
+router.post('/:id/headimg', (req, res)=> {
+	const userId = req.params.id
+	const headimgUpload = upload('imgs', 'img')
+	headimgUpload(req, res, (err)=> {
+		if(err) return res.send('something wrong')
+		User.findOne({_id: userId})
+		.exec((err, user)=> {
+			if(err) return res.send(err)
+			if(!user) return res.send({error: 'Not found user'})
+			User.findOneAndUpdate({_id: userId}, 
+			{$set: {
+				wxInfo: {nickName: user.wxInfo.nickName,
+					openId: user.wxInfo.openId,
+					gender: user.wxInfo.gender,
+					language: user.wxInfo.language,
+					city: user.wxInfo.city,
+					province: user.wxInfo.province,
+					country: user.wxInfo.country,
+					avatarUrl: host.bridge + req.file.path
+				}
+			}}, 
+			{new: true}, 
+			(err, newuser)=> {
+				if(err) return res.send(err)
+				res.send(newuser)
+			})
 		})
 	})
 })

@@ -240,16 +240,14 @@ router.post('/:id/doc', (req, res)=> {
 router.patch('/:id/doc/:docId', (req, res)=> {
 	const projectId = req.params.id
 		, docId = req.params.docId
-	Document.remove({_id: docId})
-	.exec((err)=> {
+	Document.findOneAndUpdate({_id: docId}, 
+	{$set: {writer: req.body.writer}}, 
+	{new: true}, 
+	(err, doc)=> {
 		if(err) return res.send(err)
-		Project.update({_id: projectId}, 
-		{$set: {document: defaultId}},
-		(err, result)=> {
-			if(err) return console.log(err)
-		})
-		res.json({message: 'the doc delete success'})
+		res.send(doc)
 	})
+	
 })
 //删除开发文档
 router.delete('/:id/doc/:docId', (req, res)=> {
@@ -581,6 +579,16 @@ router.patch('/:id/:part', (req, res)=> {
 				})
 			})
 		}
+	})
+})
+//----------------------------------------------------------------------------------------
+
+//开发文档图片
+router.post('/document/photo', (req, res)=> {
+	const photoUpload = upload('photos', 'photo')
+	photoUpload(req, res, (err)=> {
+		if(err) return res.send('something wrong')
+		res.send({photoUrl: host.bridge + req.file.path})
 	})
 })
 

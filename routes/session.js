@@ -18,7 +18,7 @@ function setinfo(wxInfo, res) {
 			(err, token)=> {
 				if(err) return res.send(err)
 				// console.log('ok')
-				res.send({openId: same.openid, token: token})
+				res.send({mold: same.mold, token: token})
 			})
 		} else {
 			const info = new User({
@@ -32,7 +32,7 @@ function setinfo(wxInfo, res) {
 				{expiresIn: '7d'}, 
 				(err, token)=> {
 					if(err) return res.send(err)
-					res.send({openId: info.openid, token: token})
+					res.send({mold: info.mold, token: token})
 				})
 			})
 		}

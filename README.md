@@ -121,6 +121,12 @@ A small bridge.
 }
 ```
 返回=>  客户信息    
+### 更改头像
+```js
+		POST    http://localhost:2017/admin/customer/:id/headimg?token=${token}
+```
+key: img   
+返回=>  客户信息    
 
 ## 开发者
 ### 查看信息
@@ -149,8 +155,12 @@ A small bridge.
 ```
 ### 更改信息
 ```js
-		PATCH    http://localhost:2017/admin/developer/:id?token=${token}
+		PATCH    http://localhost:2017/admin/developer/:id?token=${token}&doing=${projectId}&push=${projectId}&pull=${projectId}
 ```
+doing=${projectId} : 把projectId传进 doing
+push=${projectId} : 把projectId传进 participations
+pull=${projectId} : 把projectId从 participations 删掉
+
 ```js
 {
 	nickName: ${nickName},
@@ -158,10 +168,16 @@ A small bridge.
 	signature: ${signature},
 	introduction: ${introduction},
 	QQ: ${QQ},
-	telephone: ${telephone}
+	telephone: ${telephone},
+	status: ${status}
 ```
 返回=>  开发者信息    
-
+### 更改头像
+```js
+		POST    http://localhost:2017/admin/developer/:id/headimg?token=${token}
+```
+key: img   
+返回=>  开发者信息    
 
 
 
@@ -238,8 +254,23 @@ key: design
 	writer: ${writer}        //文档(String)
 }
 ```
+* 6. 上传开发文档图片
+```js
+		POST    http://localhost:2017/admin/project/document/photo?token=${token}
+```
+key: photo    (url不存进数据库的)    
+返回=>  { photoUrl: ${photoUrl} }    
+* 7. 更改开发文档
+```js
+		PATCH    http://localhost:2017/admin/project/:id/doc/:docId?token=${token}
+```
+```js
+{
+	writer: ${writer}        //文档(String)
+}
+```
     
-* 6. 删除开发文档
+* 8. 删除开发文档
 ```js
 		DELETE    http://localhost:2017/admin/project/:id/doc/:docId?token=${token}
 ```
