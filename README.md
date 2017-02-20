@@ -292,13 +292,14 @@ key: design
 ```js
 		POST    http://localhost:2017/admin/project/:id/schedule/:part?token=${token}
 ```
-part: frontEnd || backstage || backEnd 
-```js
+part: frontEnd || backstage || backEnd    
+返回=>  任务栏Id
+<!-- ```js
 {
 	txt: ${txt},        //任务(String)
 	completion: ${completion}        //完成状态(Boolean)
 }
-```
+``` -->
 ### 添加任务
 ```js
 		POST    http://localhost:2017/admin/project/schedule/:barid/task?token=${token}

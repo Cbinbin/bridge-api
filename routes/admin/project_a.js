@@ -344,20 +344,20 @@ router.post('/:id/schedule/:part', (req, res)=> {
 				part: part,
 				column: []
 			})
-			const task = new Task({
-				projectId: projectId,
-				txt: req.body.txt || '项目构架搭建',
-				completion: req.body.completion || false
-			})
-			task.save((err)=> {
+			// const task = new Task({
+			// 	projectId: projectId,
+			// 	txt: req.body.txt || '项目构架搭建',
+			// 	completion: req.body.completion || false
+			// })
+			// task.save((err)=> {
+			// 	if(err) return res.send(err)
+			// taskbar.column.push(task._id)
+			taskbar.save((err)=> {
 				if(err) return res.send(err)
-				taskbar.column.push(task._id)
-				taskbar.save((err)=> {
-					if(err) return res.send(err)
-					scheduleChange(part, projectId, taskbar._id)
-					res.send(taskbar)
-				})
+				scheduleChange(part, projectId, taskbar._id)
+				res.send(taskbar)
 			})
+			// })
 		})
 	})
 })
