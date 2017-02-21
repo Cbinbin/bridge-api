@@ -92,7 +92,10 @@ router.get('/:id/schedule', (req, res)=> {
 	.exec((err, schedule)=> {
 		if(err) return res.send(err)
 		if(!schedule) return res.send({error: 'Not found the schedule'})
-		res.send(schedule)
+		var nowdate = new Date()
+			, remain = parseInt((schedule.going.time[1] - nowdate)/(1000*60*60*24))
+		if(remain < 0) remain = 0
+		res.send({schedule, remainTime: remain})
 	})
 })
 
