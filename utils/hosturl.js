@@ -1,3 +1,3 @@
 module.exports = {
-	bridge: 'http://api.cbinbin.xyz/'
+	bridge: 'http://bridge.newteo.com/'
 }

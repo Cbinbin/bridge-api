@@ -87,7 +87,7 @@ router.get('/project/all', (req, res)=> {
 		if(err) return res.send(err)
 		if(user.mold != 'developer') return res.send({warning: 'Not the developer'})
 		user.participations.map((item)=> {
-			var backEnd = worked(item._id, "backEnd", user._id)
+			backEnd = worked(item._id, "frontEnd", user._id)
 			if(worked(item._id, "frontEnd", user._id)) work = '前端界面'
 			else if(worked(item._id, "backstage", user._id)) work = '后台管理界面'
 			else if(worked(item._id, "backEnd", user._id)) work = '后端api'
