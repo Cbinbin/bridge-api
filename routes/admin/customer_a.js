@@ -26,7 +26,9 @@ router.patch('/:id', (req, res)=> {
 	.exec((err, user)=> {
 		if(err) return res.send(err)
 		if(!user) return res.send({error: 'Not found user'})
-		if(onpushId || finishpushId) {
+		if((onpushId && onpullId) || (onpushId && finishpullId) || (finishpullId && finishpushId) || (onpullId && finishpushId)) {
+			return res.send({error: 'push and pull can not exist at the same time'})
+		} else if((onpushId && !onpullId) || (finishpushId && !finishpullId)) {
 			User.findOneAndUpdate({_id: user._id}, 
 			{$set: {
 					wxInfo: {nickName: req.body.nickName || user.wxInfo.nickName,

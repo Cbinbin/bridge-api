@@ -88,14 +88,30 @@ router.get('/:id/document', (req, res)=> {
 //
 router.get('/:id/schedule', (req, res)=> {
 	const projectId = req.params.id
-	Schedule.findOne({projectId: projectId}, {__v:0})
-	.exec((err, schedule)=> {
+	Project.findOne({_id: projectId})
+	.exec((err, project)=> {
 		if(err) return res.send(err)
-		if(!schedule) return res.send({error: 'Not found the schedule'})
-		var nowdate = new Date()
-			, remain = parseInt((schedule.going.time[1] - nowdate)/(1000*60*60*24))
-		if(remain < 0) remain = 0
-		res.send({schedule, remainTime: remain})
+		if(!project) return res.json({error: 'Not found the project'})
+		Schedule.findOne({projectId: projectId}, {__v:0})
+		.exec((err, schedule)=> {
+			if(err) return res.send(err)
+			if(!schedule) return res.send({error: 'Not found the schedule'})
+			var nowdate = new Date()
+				, remain = parseInt((schedule.going.time[1] - nowdate)/(1000*60*60*24))
+				, stage
+			if(remain < 0) remain = 0
+			schedule.pending.time = dateChange(schedule.pending.time)
+			schedule.start.time = dateChange(schedule.start.time)
+			schedule.going.time = dateChange(schedule.going.time)
+			schedule.check.time = dateChange(schedule.check.time)
+			schedule.finish.time = dateChange(schedule.finish.time)
+			if(project.progression == 'pending')  stage = schedule.pending
+			if(project.progression == 'start')  stage = schedule.start
+			if(project.progression == 'going')  stage = schedule.going
+			if(project.progression == 'check')  stage = schedule.check
+			if(project.progression == 'finish')  stage = schedule.finish
+			res.send({stage: stage, remainTime: remain})
+		})
 	})
 })
 
