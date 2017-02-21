@@ -51,5 +51,16 @@ router.get('/', (req, res)=> {
 		res.send(user)
 	})
 })
+//
+router.get('/:id', (req, res)=> {
+	const developerId = req.params.id
+	User.findOne({_id: developerId}, {wxInfo:1, mold:1, introduction:1, signature:1, position:1, QQ:1, status:1, projectTime:1, totalTime:1, doing:1, participations:1, telephone: 1, createdTime:1, updatedTime:1})
+	.where('mold').equals('developer')
+	.exec((err, user)=> {
+		if(err) return res.send(err)
+		if(!user) return res.send({warning: 'Not the developer'}) 
+		res.send(user)
+	})
+})
 
 module.exports = router

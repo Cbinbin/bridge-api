@@ -503,6 +503,10 @@ part: frontEnd || backstage || backEnd
 }
 ```
 
+### 查看进度
+```js
+		GET    http://localhost:2017/projecrt/:id/schedule?token=${token}
+```
 ### 查看设计图
 ```js
 		GET    http://localhost:2017/projecrt/:id/design?token=${token}
@@ -544,3 +548,8 @@ part: frontEnd || backstage || backEnd
 		PATCH    http://localhost:2017/developer/status?token=${token}
 ```
 // 不是开发者则无法更改
+
+### 查看其他开发者信息
+```js
+		GET    http://localhost:2017/developer/:developerId?token=${token}
+```

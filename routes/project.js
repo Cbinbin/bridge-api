@@ -3,6 +3,7 @@ const router = require('express').Router()
 	, Project = require('../models/Project')
 	, Design = require('../models/Design')
 	, Document = require('../models/Document')
+	, Schedule = require('../models/Schedule')
 	, checkToken = require('../utils/checkToken')
 
 function dateChange(time) {
@@ -41,6 +42,9 @@ router.get('/:id', (req, res)=> {
 	.populate('designs', 'filename designUrl')
 	.populate('document', 'writer')
 	.populate('possessor', 'company wxInfo')
+	.populate('developers.backEnd', 'wxInfo mold position status')
+	.populate('developers.backstage', 'wxInfo mold position status')
+	.populate('developers.frontEnd', 'wxInfo mold position status')
 	.exec((err, project)=> {
 		if(err) return res.send(err)
 		if(!project) return res.json({error: 'Not found the project'})
@@ -81,6 +85,15 @@ router.get('/:id/document', (req, res)=> {
 		})
 	})
 })
-
+//
+router.get('/:id/schedule', (req, res)=> {
+	const projectId = req.params.id
+	Schedule.findOne({projectId: projectId}, {__v:0})
+	.exec((err, schedule)=> {
+		if(err) return res.send(err)
+		if(!schedule) return res.send({error: 'Not found the schedule'})
+		res.send(schedule)
+	})
+})
 
 module.exports = router
