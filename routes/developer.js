@@ -62,5 +62,15 @@ router.get('/:id', (req, res)=> {
 		res.send(user)
 	})
 })
+//
+// router.get('/project', (req, res)=> {
+// 	const openId = req.decoded.openId
+// 	User.findOne({openid: openId})
+// 	.populate('participations')
+// 	.exec((err, user)=> {
+// 		if(err) return res.send(err)
+// 		res.send(user)
+// 	})
+// })
 
 module.exports = router

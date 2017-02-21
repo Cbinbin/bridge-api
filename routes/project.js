@@ -7,8 +7,8 @@ const router = require('express').Router()
 	, checkToken = require('../utils/checkToken')
 
 function dateChange(time) {
-	time[0] = moment(time[0]).format('MMM Do')
-	time[1] = moment(time[1]).format('MMM Do')
+	time[0] = moment(time[0]).format('MM月DD日')
+	time[1] = moment(time[1]).format('MM月DD日')
 	time = [time[0], time[1]]
 	return time
 }
