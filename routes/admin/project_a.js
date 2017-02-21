@@ -562,7 +562,14 @@ router.patch('/:id/:part', (req, res)=> {
 				if(project.participants >= 0) project.participants = project.participants - 1
 				project.save((err)=> {
 					if(err) return res.send(err)
-					res.send(project)
+					Project.findOne({_id: project._id})
+					.populate('developers.backEnd', 'wxInfo mold position QQ telephone signature introduction status projectTime totalTime doing participations')
+					.populate('developers.backstage', 'wxInfo mold position QQ telephone signature introduction status projectTime totalTime doing participations')
+					.populate('developers.frontEnd', 'wxInfo mold position QQ telephone signature introduction status projectTime totalTime doing participations')
+					.exec((err, nproject)=> {
+						if(err) return res.send(err)
+						res.send(nproject)
+					})
 				})
 			})
 		} else {
@@ -575,7 +582,14 @@ router.patch('/:id/:part', (req, res)=> {
 				if(project.participants >= 0) project.participants = project.participants + 1
 				project.save((err)=> {
 					if(err) return res.send(err)
-					res.send(project)
+					Project.findOne({_id: project._id})
+					.populate('developers.backEnd', 'wxInfo mold position QQ telephone signature introduction status projectTime totalTime doing participations')
+					.populate('developers.backstage', 'wxInfo mold position QQ telephone signature introduction status projectTime totalTime doing participations')
+					.populate('developers.frontEnd', 'wxInfo mold position QQ telephone signature introduction status projectTime totalTime doing participations')
+					.exec((err, nproject)=> {
+						if(err) return res.send(err)
+						res.send(nproject)
+					})
 				})
 			})
 		}

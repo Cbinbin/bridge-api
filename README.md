@@ -379,7 +379,7 @@ barid为上一步添加任务栏返回的Id
 ```
 ### 添加开发者进项目
 ```js
-		PATCH    http://localhost:2017/admin/project/:id/:part?developer=${developer}&token=${token}    
+		PATCH    http://localhost:2017/admin/project/:id/:part?developer=${developerId}&token=${token}    
 part: frontEnd || backstage || backEnd 
 ```
 // 发送第二次则删除该开发者

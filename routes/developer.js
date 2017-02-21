@@ -1,5 +1,6 @@
 const router = require('express').Router()
 	, User = require('../models/User')
+	, Project = require('../models/Project')
 	, checkToken = require('../utils/checkToken')
 
 checkToken(router)
@@ -62,16 +63,36 @@ router.get('/:id', (req, res)=> {
 		res.send(user)
 	})
 })
+
+function worked(pId, parts, uId) {
+	Project.findOne({_id: pId})
+	.where(`developers.${parts}`).in([uId])
+	.exec((err, project)=>{
+		if(err) return console.log(err)
+		if(!project) return false
+		console.log(user._id)
+		return true
+	})
+}
 //
 router.get('/project/all', (req, res)=> {
 	const openId = req.decoded.openId
+		, projects = []
+		, work = ''
 	User.findOne({openid: openId})
 	.populate('participations')
 	.exec((err, user)=> {
 		if(err) return res.send(err)
 		if(user.mold != 'developer') return res.send({warning: 'Not the developer'})
-		
-		res.send(user)
+		user.participations.map((item)=> {
+			if(worked(item._id, "frontEnd", user._id)) work = '前端界面'
+			if(worked(item._id, "backstage", user._id)) work = '后台管理界面'
+			if(worked(item._id, "backEnd", user._id)) work = '后端api'
+			projects.push({item, work: work})
+
+		})
+
+		res.send(projects)
 	})
 })
 
