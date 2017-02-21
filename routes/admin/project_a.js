@@ -407,7 +407,7 @@ router.patch('/schedule/task/:taskId', (req, res)=> {
 		if(err) return res.send(err)
 		if(!task) return res.send({error: 'Not found task'})
 		Task.findOneAndUpdate({_id: taskId}, 
-		{$set: {txt: req.body.txt || task.txt, completion: req.body.completion || task.completion}}, 
+		{$set: {txt: req.body.txt || task.txt, completion: req.body.completion}}, 
 		{new: true}, 
 		(err, newtask)=> {
 			if(err) return res.send(err)
