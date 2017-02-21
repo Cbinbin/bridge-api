@@ -93,6 +93,13 @@ router.get('/:id/schedule', (req, res)=> {
 		if(err) return res.send(err)
 		if(!project) return res.json({error: 'Not found the project'})
 		Schedule.findOne({projectId: projectId}, {__v:0})
+		.populate({path: 'going.taskbars.frontEnd going.taskbars.backstage going.taskbars.backEnd start.contents', 
+			select: 'part column content',
+			populate: {
+				path: 'column',
+				select: 'txt completion'
+			}
+		})
 		.exec((err, schedule)=> {
 			if(err) return res.send(err)
 			if(!schedule) return res.send({error: 'Not found the schedule'})
