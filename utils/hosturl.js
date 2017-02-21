@@ -1,3 +1,3 @@
 module.exports = {
-	bridge: 'http://bridge.newteo.com/'
+	bridge: 'https://bridge.newteo.com/'
 }
