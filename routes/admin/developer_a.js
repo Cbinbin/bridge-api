@@ -1,5 +1,7 @@
 const router = require('express').Router()
 	, User = require('../../models/User')
+	, upload = require('../../utils/upload')
+	, host = require('../../utils/hosturl')
 
 router.get('/', (req, res)=> {
 	const per = Number(req.query.per) || 10

@@ -63,14 +63,16 @@ router.get('/:id', (req, res)=> {
 	})
 })
 //
-// router.get('/project', (req, res)=> {
-// 	const openId = req.decoded.openId
-// 	User.findOne({openid: openId})
-// 	.populate('participations')
-// 	.exec((err, user)=> {
-// 		if(err) return res.send(err)
-// 		res.send(user)
-// 	})
-// })
+router.get('/project/all', (req, res)=> {
+	const openId = req.decoded.openId
+	User.findOne({openid: openId})
+	.populate('participations')
+	.exec((err, user)=> {
+		if(err) return res.send(err)
+		if(user.mold != 'developer') return res.send({warning: 'Not the developer'})
+		
+		res.send(user)
+	})
+})
 
 module.exports = router

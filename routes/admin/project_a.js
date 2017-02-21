@@ -23,8 +23,8 @@ function removeId(Model, id) {
 }
 
 function dateChange(time) {
-	time[0] = moment(time[0]).format('MMM Do')
-	time[1] = moment(time[1]).format('MMM Do')
+	time[0] = moment(time[0]).format('YYYY年MM月DD日')
+	time[1] = moment(time[1]).format('YYYY年MM月DD日')
 	time = [time[0], time[1]]
 	return time
 }
