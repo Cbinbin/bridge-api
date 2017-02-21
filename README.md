@@ -443,7 +443,54 @@ part: frontEnd || backstage || backEnd
 返回=>
 ```js
 {
-	......
+	"project": {
+		......
+		"document": {...},
+		"possessor": {...},
+		"schedule": {
+			"_id": "xxx",
+			"finish": {        //已完成
+				...
+			},
+			"check": {        //验收中
+				...
+			},
+			"going": {        //开发阶段
+				...
+			},
+			"start": {        //需求阶段
+				...
+			},
+			"pending": {        //待处理
+				...
+			}
+		},
+		"developers": {
+			"backEnd": [
+				{...}, {...}
+			],
+			"backstage": [
+				{...}
+			],
+			"frontEnd": [
+				{...}
+			]
+		},
+		"designs": [{...}, {...}],
+
+		......
+	},
+	"period": "xx ~ xx"
+}
+```
+
+### 查看进度
+```js
+		GET    http://localhost:2017/projecrt/:id/schedule?token=${token}
+```
+返回=>
+```js
+{
 	"schedule": {
 		"_id": "xxx",
 		"finish": {        //已完成
@@ -499,13 +546,8 @@ part: frontEnd || backstage || backEnd
 			]
 		}
 	},
-	......
+	"remainTime": 0        //going中的结束时间和现在时间的差距
 }
-```
-
-### 查看进度
-```js
-		GET    http://localhost:2017/projecrt/:id/schedule?token=${token}
 ```
 ### 查看设计图
 ```js
