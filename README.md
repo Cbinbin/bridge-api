@@ -595,3 +595,7 @@ part: frontEnd || backstage || backEnd
 ```js
 		GET    http://localhost:2017/developer/:developerId?token=${token}
 ```
+### 查看项目
+```js
+		GET    http://localhost:2017/developer/project/all?token=${token}
+```
