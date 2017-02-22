@@ -579,6 +579,16 @@ part: frontEnd || backstage || backEnd
 }
 ```
 返回=>  用户信息 (客户，开发者接口都一样)    
+### 更改个人状态
+```js
+		PATCH    http://localhost:2017/user/mold?token=${token}
+```
+```js
+{
+	mold: ${mold}           // developer 或 customer, 其他的都为user
+}
+```
+    
 
 ## 开发者
 ### 查看个人信息
