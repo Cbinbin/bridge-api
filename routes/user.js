@@ -45,4 +45,62 @@ router.get('/', (req, res)=> {
 	})
 })
 
+router.patch('/mold', (req, res)=> {
+	const openId = req.decoded.openId
+	User.findOne({openid: openId})
+	.exec((err, user)=> {
+		if(err) return res.send(err)
+		if(req.body.mold == 'developer') {
+			User.findOneAndUpdate({_id: user._id}, 
+			{$set: {
+				mold: req.body.mold,
+				position: user.position || '',
+				QQ: user.QQ || 0,
+				telephone: user.telephone || 0,
+				signature: user.signature || '',
+				introduction: user.introduction || '',
+				status: user.status || 'off',
+				projectTime: user.projectTime || 0,
+				totalTime: user.totalTime || 0,
+				doing: user.doing || null,
+				participations: user.participations || [ ]
+			}}, 
+			{new: true, upsert: true}, 
+			(err, newuser)=> {
+				if(err) return res.send(err)
+				res.send(newuser)
+			})
+		} else if(req.body.mold == 'customer') {
+			User.findOneAndUpdate({_id: user._id}, 
+			{$set: {
+				mold: req.body.mold,
+				realname: user.realname || '',
+				telephone: user.telephone || 0,
+				company: user.company || '',
+				companyLogo: user.companyLogo || '',
+				companyAddress: user.companyAddress || '',
+				fax: user.fax || '',
+				seniority: user.seniority || 0,
+				serviceDate: user.serviceDate || '',
+				onGoing: user.onGoing || [ ],
+				finishProjects: user.finishProjects || [ ],
+				remark: user.remark || ''
+			}}, 
+			{new: true, upsert: true}, 
+			(err, newuser)=> {
+				if(err) return res.send(err)
+				res.send(newuser)
+			})
+		} else {
+			User.findOneAndUpdate({_id: user._id}, 
+			{$set: {mold: 'user'}}, 
+			{new: true, upsert: true}, 
+			(err, newuser)=> {
+				if(err) return res.send(err)
+				res.send(newuser)
+			})
+		}
+	})
+})
+
 module.exports = router

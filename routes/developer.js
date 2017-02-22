@@ -64,40 +64,43 @@ router.get('/:id', (req, res)=> {
 	})
 })
 
-function worked(pId, parts, uId) {
-	Project.findOne({_id: pId})
-	.where(`developers.${parts}`).in([uId])
-	.exec((err, project)=>{
-		if(err) return console.log(err)
-		if(!project) return tf = false
-		return tf = true
-	})
-}
+// function worked(pId, parts, uId) {
+// 	Project.findOne({_id: pId})
+// 	.where(`developers.${parts}`).in([uId])
+// 	.exec((err, project)=>{
+// 		if(err) return console.log(err)
+// 		if(!project) return tf = false
+// 		return tf = true
+// 	})
+// }
 //
 router.get('/project/all', (req, res)=> {
 	const openId = req.decoded.openId
 		// , parts = ['frontEnd', 'backstage', 'backEnd']
-		// , projects = []
-		// , work = ''
+		, projects = []
+		, work = ''
 	User.findOne({openid: openId})
 	.populate('participations')
 	.exec((err, user)=> {
 		if(err) return res.send(err)
 		if(user.mold != 'developer') return res.send({warning: 'Not the developer'})
-		// user.participations.map((projectItem)=> {
-		// 	projectItem.developers.frontEnd.map((userItem)=> {
+		user.participations.map((projectItem)=> {
+			projects.push(projectItem)
+		})
+		// projects.map((item)=> {
+		// 	item.developers.frontEnd.map((userItem)=> {
 		// 		if(user._id == userItem) {
 		// 			work = '前端界面'
 		// 		}
 		// 		return work
 		// 	})
-		// 	projectItem.developers.backstage.map((userItem)=> {
+		// 	item.developers.backstage.map((userItem)=> {
 		// 		if(user._id == userItem) {
 		// 			work = '后台管理界面'
 		// 		}
 		// 		return work
 		// 	})
-		// 	projectItem.developers.backEnd.map((userItem)=> {
+		// 	item.developers.backEnd.map((userItem)=> {
 		// 		if(user._id == userItem) {
 		// 			work = '后端api'
 		// 			console.log('work')
@@ -105,10 +108,10 @@ router.get('/project/all', (req, res)=> {
 		// 		console.log(work)
 		// 		return work
 		// 	})
-		// 	projects.push({projectItem, work: work})
+		// 	item.push({work: work})
 		// 	return projects
 		// })
-		res.send({projects: user.participations})
+		res.send(projects)
 	})
 })
 
