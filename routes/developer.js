@@ -65,36 +65,50 @@ router.get('/:id', (req, res)=> {
 })
 
 function worked(pId, parts, uId) {
-	var pp
 	Project.findOne({_id: pId})
 	.where(`developers.${parts}`).in([uId])
 	.exec((err, project)=>{
 		if(err) return console.log(err)
-		if(!project) return false
-		console.log(parts)
-		pp = parts
+		if(!project) return tf = false
+		return tf = true
 	})
-	return pp
 }
 //
 router.get('/project/all', (req, res)=> {
 	const openId = req.decoded.openId
-		, projects = []
-		, work = ''
+		// , parts = ['frontEnd', 'backstage', 'backEnd']
+		// , projects = []
+		// , work = ''
 	User.findOne({openid: openId})
 	.populate('participations')
 	.exec((err, user)=> {
 		if(err) return res.send(err)
 		if(user.mold != 'developer') return res.send({warning: 'Not the developer'})
-		user.participations.map((item)=> {
-			backEnd = worked(item._id, "frontEnd", user._id)
-			if(worked(item._id, "frontEnd", user._id)) work = '前端界面'
-			else if(worked(item._id, "backstage", user._id)) work = '后台管理界面'
-			else if(worked(item._id, "backEnd", user._id)) work = '后端api'
-			projects.push({item, work: work})
-			console.log(backEnd)
-		})
-		res.send(projects)
+		// user.participations.map((projectItem)=> {
+		// 	projectItem.developers.frontEnd.map((userItem)=> {
+		// 		if(user._id == userItem) {
+		// 			work = '前端界面'
+		// 		}
+		// 		return work
+		// 	})
+		// 	projectItem.developers.backstage.map((userItem)=> {
+		// 		if(user._id == userItem) {
+		// 			work = '后台管理界面'
+		// 		}
+		// 		return work
+		// 	})
+		// 	projectItem.developers.backEnd.map((userItem)=> {
+		// 		if(user._id == userItem) {
+		// 			work = '后端api'
+		// 			console.log('work')
+		// 		}
+		// 		console.log(work)
+		// 		return work
+		// 	})
+		// 	projects.push({projectItem, work: work})
+		// 	return projects
+		// })
+		res.send({projects: user.participations})
 	})
 })
 

@@ -1,5 +1,6 @@
 const router = require('express').Router()
 	, moment = require('moment')
+	, User = require('../models/User')
 	, Project = require('../models/Project')
 	, Design = require('../models/Design')
 	, Document = require('../models/Document')
@@ -17,11 +18,15 @@ checkToken(router)
 
 //获取项目
 router.get('/', (req, res)=> {
-	Project.find({ }, {__v: 0, startDate: 0, endDate: 0, schedule: 0, cycle: 0, document: 0, designs: 0})
-	.populate('possessor')
-	.exec((err, projects)=> {
+	const openId = req.decoded.openId
+	User.findOne({openid: openId})
+	.exec((err, user)=> {
 		if(err) return res.send(err)
-		res.send(projects)
+		Project.find({possessor: user._id}, {__v: 0, startDate: 0, endDate: 0, schedule: 0, cycle: 0, document: 0, designs: 0})
+		.exec((err, projects)=> {
+			if(err) return res.send(err)
+			res.send(projects)
+		})
 	})
 })
 //获取单个项目

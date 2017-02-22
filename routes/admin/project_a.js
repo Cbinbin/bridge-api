@@ -9,6 +9,7 @@ const router = require('express').Router()
 	, Taskbar = require('../../models/Taskbar')
 	, Task = require('../../models/Task')
 	, Content = require('../../models/Content')
+	, User = require('../../models/User')
 	, host = require('../../utils/hosturl')
 	, upload = require('../../utils/upload')
 	, uploads = require('../../utils/uploads')
@@ -562,6 +563,12 @@ router.patch('/:id/:part', (req, res)=> {
 				if(project.participants >= 0) project.participants = project.participants - 1
 				project.save((err)=> {
 					if(err) return res.send(err)
+					User.update({_id: developerId}, 
+					{$pull: {participations: projectId}}, 
+					(err, result)=> {
+						if(err) return console.log(err)
+						console.log('-')
+					})
 					Project.findOne({_id: project._id})
 					.populate('developers.backEnd', 'wxInfo mold position QQ telephone signature introduction status projectTime totalTime doing participations')
 					.populate('developers.backstage', 'wxInfo mold position QQ telephone signature introduction status projectTime totalTime doing participations')
@@ -576,12 +583,19 @@ router.patch('/:id/:part', (req, res)=> {
 			Project.findOne({_id: projectId})
 			.exec((err, project)=> {
 				if(err) return res.send(err)
+				if(!project) return res.send({error: 'Not found the project'})
 				if(backEndId) project.developers.backEnd.push(backEndId)
 				if(backstageId) project.developers.backstage.push(backstageId)
 				if(frontEndId) project.developers.frontEnd.push(frontEndId)
 				if(project.participants >= 0) project.participants = project.participants + 1
 				project.save((err)=> {
 					if(err) return res.send(err)
+					User.update({_id: developerId}, 
+					{$push: {participations: projectId}}, 
+					(err, result)=> {
+						if(err) return console.log(err)
+						console.log('+')
+					})
 					Project.findOne({_id: project._id})
 					.populate('developers.backEnd', 'wxInfo mold position QQ telephone signature introduction status projectTime totalTime doing participations')
 					.populate('developers.backstage', 'wxInfo mold position QQ telephone signature introduction status projectTime totalTime doing participations')
