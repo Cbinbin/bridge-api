@@ -4,7 +4,7 @@ const router = require('express').Router()
 
 checkToken(router)
 
-router.patch('/', (req, res)=> {
+router.post('/', (req, res)=> {
 	const openId = req.decoded.openId
 	User.findOne({openid: openId}, {openid: 0, updatedTime: 0, __v: 0})
 	.exec((err, user)=> {
@@ -45,7 +45,7 @@ router.get('/', (req, res)=> {
 	})
 })
 
-router.patch('/mold', (req, res)=> {
+router.post('/mold', (req, res)=> {
 	const openId = req.decoded.openId
 	User.findOne({openid: openId})
 	.exec((err, user)=> {

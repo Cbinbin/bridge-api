@@ -569,7 +569,7 @@ part: frontEnd || backstage || backEnd
 ```
 ### 更改个人信息
 ```js
-		PATCH    http://localhost:2017/user?token=${token}
+		POST    http://localhost:2017/user?token=${token}
 ```
 ```js
 {
@@ -581,7 +581,7 @@ part: frontEnd || backstage || backEnd
 返回=>  用户信息 (客户，开发者接口都一样)    
 ### 更改个人状态
 ```js
-		PATCH    http://localhost:2017/user/mold?token=${token}
+		POST    http://localhost:2017/user/mold?token=${token}
 ```
 ```js
 {
@@ -597,7 +597,7 @@ part: frontEnd || backstage || backEnd
 ```
 ### 更改开发者状态(开发者)
 ```js
-		PATCH    http://localhost:2017/developer/status?token=${token}
+		POST    http://localhost:2017/developer/status?token=${token}
 ```
 // 不是开发者则无法更改
 

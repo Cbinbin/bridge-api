@@ -25,7 +25,7 @@ router.get('/all', (req, res)=> {
 	})
 })
 
-router.patch('/status', (req, res)=> {
+router.post('/status', (req, res)=> {
 	const openId = req.decoded.openId
 	User.findOne({openid: openId})
 	.exec((err, user)=> {
